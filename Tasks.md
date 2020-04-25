@@ -1,6 +1,12 @@
-SimpleChatServer
+# Tasks
 
-SimpleChatClient
+
+
+
+Tasks:
+
+
+
 
 
 
@@ -13,3 +19,7 @@ override handleInput
 
 ServerMessageHandler
 override handleInput
+
+using runnable
+your class can be a subclass of anotehr class
+

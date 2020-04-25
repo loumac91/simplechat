@@ -1,0 +1,13 @@
+https://stackoverflow.com/questions/16137713/how-do-i-run-a-java-program-from-the-command-line-on-windows
+
+How to compile file:
+
+javac Server.java
+
+How to execute file:
+
+java Server
+
+
+Example app:
+https://github.com/pchampio/java-chat/blob/master/
