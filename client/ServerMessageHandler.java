@@ -1,6 +1,5 @@
 package client;
 
-import java.io.InputStream;
 import java.io.*;
 
 public class ServerMessageHandler implements Runnable {
@@ -12,10 +11,12 @@ public class ServerMessageHandler implements Runnable {
   }
 
   public void run() {
-    while (true) {
+    Boolean connected = true;
+    while (connected) {
       try {
         System.out.println(this.serverReader.readLine());
       } catch (Exception e) {
+        connected = false;
       }
     }
   }

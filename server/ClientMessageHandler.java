@@ -13,11 +13,13 @@ public class ClientMessageHandler implements Runnable {
   }
 
   public void run() {
-    while (true) {
+    Boolean connected = true;
+    while (connected) {
       try {
         String message = this.chatUser.readMessage();
         this.chatServer.broadCastMessage(message);
       } catch (IOException ioException) {
+        connected = false;
         ioException.printStackTrace();
       }
     }

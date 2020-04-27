@@ -1,4 +1,4 @@
-package constants;
+package constant;
 
 public class MessageFormats {
   
@@ -10,5 +10,6 @@ public class MessageFormats {
 
   public class Server {
     public static final String SERVER_RUNNING = "simplechat Server running on \"%s:%d\"";
+    public static final String USER_WELCOME_MESSAGE = "Welcome %s";
   }
 }

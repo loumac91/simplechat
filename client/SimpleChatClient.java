@@ -3,6 +3,7 @@ package client;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import configuration.SocketConfiguration;
 
 public class SimpleChatClient implements AutoCloseable  {
   private final String address;
@@ -11,9 +12,9 @@ public class SimpleChatClient implements AutoCloseable  {
   private Socket socket;
   private PrintWriter streamWriter;
 
-  public SimpleChatClient(String address, int port) {
-    this.address = address;
-    this.port = port;
+  public SimpleChatClient(SocketConfiguration clientSocketConfiguration) {
+    this.address = clientSocketConfiguration.address;
+    this.port = clientSocketConfiguration.port;
   }
 
   public void connect() throws UnknownHostException, IOException {

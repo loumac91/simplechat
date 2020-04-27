@@ -2,20 +2,29 @@ package client;
 
 import java.io.*;
 import java.net.UnknownHostException;
-import constants.*;
 
-public class Main {
+import configuration.*;
+import constant.*;
+import format.MessageFormatter;
+
+public class ChatClient {
     public static void main(String[] args) {
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
+      SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
+        .setDefaultAddress(Server.DEFAULT_ADDRESS)
+        .setDefaultPort(Server.DEFAULT_PORT)
+        .setAddressMapper(new SocketConfigurationMapper(Client.Param.HOST, SocketConfigurationSetterFactory.addressSetter))
+        .setPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
+        .buildFromCommandLine(args);
 
       // 1. Establish (AutoCloseable) connection to simplechat Server 
-      try (SimpleChatClient chatClient = new SimpleChatClient(Server.ADDRESS, Server.PORT)) {
-        System.out.println(String.format(MessageFormats.Client.CONNECTING, Server.ADDRESS, Server.PORT));
+      try (SimpleChatClient chatClient = new SimpleChatClient(socketConfiguration)) {
+        System.out.println(MessageFormatter.getConnectingMessage(socketConfiguration.address, socketConfiguration.port));
         chatClient.connect();
-        System.out.println(String.format(MessageFormats.Client.CONNECTED, Server.ADDRESS, Server.PORT));
+        System.out.println(MessageFormatter.getConnectedMessage(socketConfiguration.address, socketConfiguration.port));
 
         // 2. Get Client username
-        System.out.println(String.format(MessageFormats.Client.USERNAME_PROMPT));
+        System.out.println(MessageFormats.Client.USERNAME_PROMPT);
         String userName = inputReader.readLine();
 
         // 3. Post username to simplechat Server
