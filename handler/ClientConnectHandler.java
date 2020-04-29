@@ -3,11 +3,13 @@ package handler;
 import server.SimpleChatServer;
 import server.SimpleChatUser;
 import java.net.Socket;
+
+import constant.Display;
 import format.MessageFormatter;
 
 public class ClientConnectHandler extends BaseHandler {
 
-  private SimpleChatServer chatServer;
+  private final SimpleChatServer chatServer;
 
   public ClientConnectHandler(SimpleChatServer chatServer) {
     super();
@@ -24,8 +26,9 @@ public class ClientConnectHandler extends BaseHandler {
 
         this.chatServer.addUser(chatUser);
 
-        String username = chatUser.getUsername();
-        chatUser.sendMessage(MessageFormatter.getWelcomeMessage(username));
+        String username = chatUser.getUsername(); // By convention, username is first message from client
+        String welcomeMessage = MessageFormatter.getWelcomeMessage(username);
+        chatUser.sendMessage(MessageFormatter.getColouredString(Display.Colour.GREEN, welcomeMessage));
 
         ClientMessageHandler clientMessageHandler = new ClientMessageHandler(this.chatServer, chatUser);
         Thread clientMessageHandlerThread = new Thread(clientMessageHandler);

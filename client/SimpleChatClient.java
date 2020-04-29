@@ -33,8 +33,7 @@ public class SimpleChatClient implements AutoCloseable  {
 
   public void sendMessage(String username, String message) {
     String formatted = MessageFormatter.formatChatMessage(username, message);
-    System.out.println("FORMATTED" + formatted);
-    this.sendMessage(username, formatted);
+    this.sendMessage(formatted);
   }
 
   public void close() throws IOException {
@@ -44,5 +43,6 @@ public class SimpleChatClient implements AutoCloseable  {
 
   private void connectSocket() throws UnknownHostException, IOException {
     this.socket = new Socket(this.address, this.port);
+    socket.getOutputStream();
   }
 }

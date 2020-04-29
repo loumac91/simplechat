@@ -6,11 +6,11 @@ import java.net.Socket;
 public class SimpleChatUser {
   private static int userIdCount = 0; // Counter across all SimpleChatUser instances
   
-  private Socket userSocket;
-  private BufferedReader inputReader;
-  private PrintWriter streamWriter;
-  private int userId;
-  private String username;
+  private final Socket userSocket;
+  private final BufferedReader inputReader;
+  private final PrintWriter streamWriter;
+  private final int userId;
+  private final String username;
 
   public SimpleChatUser(Socket userSocket) throws IOException {
     this.userSocket = userSocket;

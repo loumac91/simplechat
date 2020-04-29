@@ -6,8 +6,8 @@ import server.SimpleChatUser;
 
 public class ClientMessageHandler extends BaseHandler {
 
-  private SimpleChatServer chatServer;
-  private SimpleChatUser chatUser;
+  private final SimpleChatServer chatServer;
+  private final SimpleChatUser chatUser;
 
   public ClientMessageHandler(SimpleChatServer chatServer, SimpleChatUser chatUser) {
     super();

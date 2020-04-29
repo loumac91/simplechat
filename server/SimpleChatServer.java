@@ -4,16 +4,15 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.Collection;
 import java.net.BindException;
 import configuration.SocketConfiguration;
+import format.MessageFormatter;
 
 public class SimpleChatServer implements AutoCloseable {
   private final int port;
 
-  private ArrayList<SimpleChatUser> simpleChatUsers; // this might not be thread safe
-  private ServerSocket serverSocket;
+  private final ArrayList<SimpleChatUser> simpleChatUsers; // this might not be thread safe
+  private final ServerSocket serverSocket;
 
   public SimpleChatServer(SocketConfiguration socketConfiguration) throws BindException, IOException {
     this.port = socketConfiguration.port;
@@ -33,15 +32,12 @@ public class SimpleChatServer implements AutoCloseable {
     this.simpleChatUsers.add(user);
   }
 
-  public void broadCastMessage(SimpleChatUser user, String message) {
-    Collection<SimpleChatUser> filtered = this.simpleChatUsers.stream()
-      .filter(u -> u.getUserId() != user.getUserId())
-      .collect(Collectors.toList());
-    
-    
-    System.out.println(filtered);
-    for (SimpleChatUser simpleChatUser : filtered) {
-      simpleChatUser.sendMessage(message);
+  public void broadCastMessage(SimpleChatUser user, String message) { 
+    String formatted = MessageFormatter.formatChatMessage(user.getUsername(), message);
+    for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
+      if (simpleChatUser.getUserId() != user.getUserId()) {
+        simpleChatUser.sendMessage(formatted);
+      }
     }
   }
 }
