@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import configuration.SocketConfiguration;
+import format.MessageFormatter;
 
 public class SimpleChatClient implements AutoCloseable  {
   private final String address;
@@ -28,6 +29,12 @@ public class SimpleChatClient implements AutoCloseable  {
 
   public void sendMessage(String message) {
     this.streamWriter.println(message);
+  }
+
+  public void sendMessage(String username, String message) {
+    String formatted = MessageFormatter.formatChatMessage(username, message);
+    System.out.println("FORMATTED" + formatted);
+    this.sendMessage(username, formatted);
   }
 
   public void close() throws IOException {

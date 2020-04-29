@@ -2,7 +2,7 @@ package client;
 
 import java.io.*;
 import java.net.UnknownHostException;
-
+import handler.ServerMessageHandler;
 import configuration.*;
 import constant.*;
 import format.MessageFormatter;
@@ -11,10 +11,10 @@ public class ChatClient {
     public static void main(String[] args) {
       BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
       SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
-        .setDefaultAddress(Server.DEFAULT_ADDRESS)
-        .setDefaultPort(Server.DEFAULT_PORT)
-        .setAddressMapper(new SocketConfigurationMapper(Client.Param.HOST, SocketConfigurationSetterFactory.addressSetter))
-        .setPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
+        .withDefaultAddress(Server.DEFAULT_ADDRESS)
+        .withDefaultPort(Server.DEFAULT_PORT)
+        .withAddressMapper(new SocketConfigurationMapper(Client.Param.HOST, SocketConfigurationSetterFactory.addressSetter))
+        .withPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
         .buildFromCommandLine(args);
 
       // 1. Establish (AutoCloseable) connection to simplechat Server 
@@ -24,11 +24,11 @@ public class ChatClient {
         System.out.println(MessageFormatter.getConnectedMessage(socketConfiguration.address, socketConfiguration.port));
 
         // 2. Get Client username
-        System.out.println(MessageFormats.Client.USERNAME_PROMPT);
-        String userName = inputReader.readLine();
+        System.out.println(MessageFormat.Client.USERNAME_PROMPT);
+        String username = inputReader.readLine();
 
         // 3. Post username to simplechat Server
-        chatClient.sendMessage(userName);
+        chatClient.sendMessage(username);
 
         // 4. Start (Runnable) handler for simplechat Server messages
         ServerMessageHandler serverMessageHandler = new ServerMessageHandler(chatClient.getReadStream());
@@ -36,11 +36,11 @@ public class ChatClient {
         serverMessageHandlerThread.start();
 
         // 5. Handle user input for sending messages and parsing commands
-        String userInput = "";
+        String message = "";
         Boolean chatting = true;
         while (chatting) {
-          userInput = inputReader.readLine();
-          chatClient.sendMessage(userInput);
+          message = inputReader.readLine();
+          chatClient.sendMessage(username, message);
         }
       } catch (UnknownHostException unknownHostException) {
         unknownHostException.getStackTrace();

@@ -10,22 +10,22 @@ public class SimpleChatUser {
   private BufferedReader inputReader;
   private PrintWriter streamWriter;
   private int userId;
-  private String userName;
+  private String username;
 
   public SimpleChatUser(Socket userSocket) throws IOException {
     this.userSocket = userSocket;
     this.inputReader = new BufferedReader(new InputStreamReader(userSocket.getInputStream()));
     this.streamWriter = new PrintWriter(userSocket.getOutputStream(), true);
     this.userId = ++userIdCount;
-    this.userName = this.inputReader.readLine();
+    this.username = this.inputReader.readLine();
   }
 
   public int getUserId() {
     return this.userId;
   }
 
-  public String getUserName() {
-    return this.userName;
+  public String getUsername() {
+    return this.username;
   }
 
   public void sendMessage(String message) {

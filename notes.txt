@@ -10,4 +10,15 @@ java Server
 
 
 Example app:
-https://github.com/pchampio/java-chat/blob/master/
+https://github.com/pchampio/java-chat/
+
+
+javac client/ChatClient.java
+javac server/ChatServer.java
+
+java server/ChatServer
+java client/ChatClient
+
+---
+ Does 2.1.6 - mean that even the person who sent the message will receive their message back?
+ 

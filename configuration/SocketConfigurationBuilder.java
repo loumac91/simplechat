@@ -9,22 +9,22 @@ public class SocketConfigurationBuilder {
   private SocketConfigurationMapper addressConfigurationMapper;
   private SocketConfigurationMapper portConfigurationMapper;
 
-  public SocketConfigurationBuilder setDefaultAddress(String address) {
+  public SocketConfigurationBuilder withDefaultAddress(String address) {
     this.defaultAddress = address;
     return this;
   }
 
-  public SocketConfigurationBuilder setDefaultPort(Integer port) {
+  public SocketConfigurationBuilder withDefaultPort(Integer port) {
     this.defaultPort = port;
     return this;
   }
 
-  public SocketConfigurationBuilder setAddressMapper(SocketConfigurationMapper addressConfigurationMapper) {
+  public SocketConfigurationBuilder withAddressMapper(SocketConfigurationMapper addressConfigurationMapper) {
     this.addressConfigurationMapper = addressConfigurationMapper;
     return this;
   }
 
-  public SocketConfigurationBuilder setPortMapper(SocketConfigurationMapper portConfigurationMapper) {
+  public SocketConfigurationBuilder withPortMapper(SocketConfigurationMapper portConfigurationMapper) {
     this.portConfigurationMapper = portConfigurationMapper;
     return this;
   }
@@ -32,12 +32,12 @@ public class SocketConfigurationBuilder {
   public SocketConfiguration buildFromCommandLine(String[] args) {
     SocketConfiguration defaultConfiguration = new SocketConfiguration(this.defaultAddress, this.defaultPort);
     
-    mapStrategies(args, defaultConfiguration);
+    mapConfiguration(args, defaultConfiguration);
 
     return defaultConfiguration;
   }
 
-  private void mapStrategies(String[] args, SocketConfiguration socketConfiguration) {
+  private void mapConfiguration(String[] args, SocketConfiguration socketConfiguration) {
     Boolean skipNextArg = false;
 
     for (int i = 0; i < args.length; i++) {

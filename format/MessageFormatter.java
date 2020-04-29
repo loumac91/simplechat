@@ -1,27 +1,33 @@
 package format;
 
-import constant.MessageFormats;
+import constant.MessageFormat;
 
 public class MessageFormatter {
+
+  // CHAT
+
+  public static String formatChatMessage(String username, String message) {
+    return baseFormat(MessageFormat.Chat.CHAT_MESSAGE_FORMAT, username, message);
+  }
 
   // CLIENT
 
   public static String getConnectingMessage(String host, int port) {
-    return baseFormat(MessageFormats.Client.CONNECTING, host, port);
+    return baseFormat(MessageFormat.Client.CONNECTING, host, port);
   }
 
   public static String getConnectedMessage(String host, int port) {
-    return baseFormat(MessageFormats.Client.CONNECTED, host, port);
+    return baseFormat(MessageFormat.Client.CONNECTED, host, port);
   }
 
   // SERVER
 
   public static String getServerRunningMessage(String host, int port) {
-    return baseFormat(MessageFormats.Server.SERVER_RUNNING, host, port);
+    return baseFormat(MessageFormat.Server.SERVER_RUNNING, host, port);
   }
 
-  public static String getWelcomeMessage(String userName) {
-    return baseFormat(MessageFormats.Server.USER_WELCOME_MESSAGE, userName);
+  public static String getWelcomeMessage(String username) {
+    return baseFormat(MessageFormat.Server.USER_WELCOME_MESSAGE, username);
   }
 
   private static String baseFormat(String format, Object... args) {

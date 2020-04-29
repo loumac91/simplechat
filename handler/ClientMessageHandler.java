@@ -1,25 +1,30 @@
-package server;
+package handler;
 
 import java.io.IOException;
+import server.SimpleChatServer;
+import server.SimpleChatUser;
 
-public class ClientMessageHandler implements Runnable {
+public class ClientMessageHandler extends BaseHandler {
 
   private SimpleChatServer chatServer;
   private SimpleChatUser chatUser;
 
   public ClientMessageHandler(SimpleChatServer chatServer, SimpleChatUser chatUser) {
+    super();
     this.chatServer = chatServer;
     this.chatUser = chatUser;    
   }
 
   public void run() {
-    Boolean connected = true;
-    while (connected) {
+    this.running = true;
+    while (this.running) {
       try {
         String message = this.chatUser.readMessage();
-        this.chatServer.broadCastMessage(message);
+        // Parse message
+
+        this.chatServer.broadCastMessage(this.chatUser, message);
       } catch (IOException ioException) {
-        connected = false;
+        this.running = false;
         ioException.printStackTrace();
       }
     }
