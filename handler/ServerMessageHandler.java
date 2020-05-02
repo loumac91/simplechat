@@ -3,10 +3,23 @@ package handler;
 import java.io.*;
 import java.net.SocketException;
 
+import util.StringUtils;
+import client.SimpleChatClient;
+import constant.*;
+import format.MessageFormatter;
+
 public class ServerMessageHandler extends InputReaderHandler {
 
-  public ServerMessageHandler(BufferedReader inputReader) {
+  private final SimpleChatClient chatClient;
+  private final BufferedReader commandLineInputReader;
+
+  public ServerMessageHandler(
+    SimpleChatClient chatClient, 
+    BufferedReader commandLineInputReader, 
+    BufferedReader inputReader) {
     super(inputReader);
+    this.chatClient = chatClient;
+    this.commandLineInputReader = commandLineInputReader;
   }
 
   public void run() {
@@ -14,7 +27,16 @@ public class ServerMessageHandler extends InputReaderHandler {
     while (this.running) {
       try {
         String serverMessage = this.inputReader.readLine();
-        System.out.println(serverMessage);
+
+        if (StringUtils.IsNull(serverMessage)) {
+          running = false;
+          this.chatClient.close();
+          this.commandLineInputReader.close();
+          continue;
+        }
+
+        String formatted = formatServerMessage(serverMessage);
+        System.out.println(formatted);
       } catch (SocketException socketException) {
         this.running = false;
         socketException.printStackTrace();
@@ -23,5 +45,14 @@ public class ServerMessageHandler extends InputReaderHandler {
         ioException.printStackTrace();
       }
     }
+  }
+
+  private String formatServerMessage(String serverMessage) {
+    String result = serverMessage;
+    if (serverMessage.equals(Server.Message.SHUTDOWN_MESSAGE)) {
+      result = MessageFormatter.formatStringColour(Display.Colour.WHITE, result);
+    }
+
+    return result;
   }
 }

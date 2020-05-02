@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.net.BindException;
 import configuration.SocketConfiguration;
+import constant.Server;
 import format.MessageFormatter;
 
 public class SimpleChatServer implements AutoCloseable {
@@ -30,6 +31,19 @@ public class SimpleChatServer implements AutoCloseable {
 
   public void addUser(SimpleChatUser user) {
     this.simpleChatUsers.add(user);
+  }
+
+  public void shutdown() {
+    for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
+      simpleChatUser.sendMessage(Server.Message.SHUTDOWN_MESSAGE);
+      try {
+        simpleChatUser.disconnect();
+      } catch (IOException e) {
+        System.out.println("ERROR DISCONNECTING CLIENT");
+        e.printStackTrace();
+      }
+
+    }
   }
 
   public void broadCastMessage(SimpleChatUser user, String message) { 

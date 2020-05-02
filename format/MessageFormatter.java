@@ -5,7 +5,7 @@ import constant.MessageFormat;
 public class MessageFormatter {
 
   // COLOUR
-  public static String getColouredString(String colour, String s) { // USE enum?
+  public static String formatStringColour(String colour, String s) { // USE enum?
      return baseFormat(MessageFormat.COLOUR_FORMAT, colour, s);
   }
 
@@ -17,21 +17,21 @@ public class MessageFormatter {
 
   // CLIENT
 
-  public static String getConnectingMessage(String host, int port) {
+  public static String formatConnectingMessage(String host, int port) {
     return baseFormat(MessageFormat.Client.CONNECTING, host, port);
   }
 
-  public static String getConnectedMessage(String host, int port) {
+  public static String formatConnectedMessage(String host, int port) {
     return baseFormat(MessageFormat.Client.CONNECTED, host, port);
   }
 
   // SERVER
 
-  public static String getServerRunningMessage(String host, int port) {
+  public static String formatServerRunningMessage(String host, int port) {
     return baseFormat(MessageFormat.Server.SERVER_RUNNING, host, port);
   }
 
-  public static String getWelcomeMessage(String username) {
+  public static String formatWelcomeMessage(String username) {
     return baseFormat(MessageFormat.Server.USER_WELCOME_MESSAGE, username);
   }
 

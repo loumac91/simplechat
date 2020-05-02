@@ -35,4 +35,8 @@ public class SimpleChatUser {
   public String readMessage() throws IOException {
     return this.inputReader.readLine();
   }
+
+  public void disconnect() throws IOException {
+    this.userSocket.close();
+  }
 }

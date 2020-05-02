@@ -36,13 +36,17 @@ public class SimpleChatClient implements AutoCloseable  {
     this.sendMessage(formatted);
   }
 
+  public Boolean isConnected() {
+    return !this.socket.isClosed();
+  }
+
+  @Override
   public void close() throws IOException {
-    this.streamWriter.close();
+    // this.streamWriter.close();
     this.socket.close();
   }
 
   private void connectSocket() throws UnknownHostException, IOException {
     this.socket = new Socket(this.address, this.port);
-    socket.getOutputStream();
   }
 }

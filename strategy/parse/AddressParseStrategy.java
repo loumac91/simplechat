@@ -1,6 +1,7 @@
 package strategy.parse;
 
 import parse.ParseResult;
+import util.StringUtils;
 import constant.Server;
 
 public class AddressParseStrategy implements ParseStrategy<String> {
@@ -11,7 +12,7 @@ public class AddressParseStrategy implements ParseStrategy<String> {
   }
 
   private Boolean isValidAddressName(String input) {
-    if (input == null) {
+    if (StringUtils.IsNull(input)) {
       return false;
     }
     

@@ -19,7 +19,7 @@ public class ChatServer {
 
     // 1. Run (AutoCloseable) Host
     try (SimpleChatServer chatServer = new SimpleChatServer(socketConfiguration)) {
-      System.out.println(MessageFormatter.getServerRunningMessage(socketConfiguration.address, socketConfiguration.port));
+      System.out.println(MessageFormatter.formatServerRunningMessage(socketConfiguration.address, socketConfiguration.port));
 
       // Thread for handling Connectings
       ClientConnectHandler clientConnectHandler = new ClientConnectHandler(chatServer);
@@ -32,6 +32,7 @@ public class ChatServer {
           String adminInput = inputReader.readLine();
           if (!StringUtils.isNullOrEmpty(adminInput) && adminInput.equals(Command.EXIT)) {  
             running = false;
+            chatServer.shutdown();
           }
         } catch (Exception e) {
           running = false;

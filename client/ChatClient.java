@@ -19,9 +19,9 @@ public class ChatClient {
 
       // 1. Establish (AutoCloseable) connection to simplechat Server 
       try (SimpleChatClient chatClient = new SimpleChatClient(socketConfiguration)) {
-        System.out.println(MessageFormatter.getConnectingMessage(socketConfiguration.address, socketConfiguration.port));
+        System.out.println(MessageFormatter.formatConnectingMessage(socketConfiguration.address, socketConfiguration.port));
         chatClient.connect();
-        System.out.println(MessageFormatter.getConnectedMessage(socketConfiguration.address, socketConfiguration.port));
+        System.out.println(MessageFormatter.formatConnectedMessage(socketConfiguration.address, socketConfiguration.port));
 
         // 2. Get Client username
         System.out.print(Client.Prompt.USERNAME_PROMPT);
@@ -32,19 +32,20 @@ public class ChatClient {
         BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(chatClient.getReadStream()));
         
         // Wait for Server Welcome Message
-        String serverMessage = serverInputReader.readLine();
-        System.out.println(serverMessage);
+        String welcomeMessage = serverInputReader.readLine();
+        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Display.Colour.GREEN, welcomeMessage);
+        System.out.println(formattedWelcomeMessage);
 
         // 4. Start (Runnable) handler for simplechat Server messages
-        ServerMessageHandler serverMessageHandler = new ServerMessageHandler(serverInputReader);
+        ServerMessageHandler serverMessageHandler = new ServerMessageHandler(chatClient, inputReader, serverInputReader);
         Thread serverMessageHandlerThread = new Thread(serverMessageHandler);
         serverMessageHandlerThread.start();
 
         // 5. Handle user input for sending messages and parsing commands
         String message = "";
-        Boolean connected = true; // This is never set to false
-        while (connected) {
+        while (true) {
           message = inputReader.readLine();
+          if (!chatClient.isConnected()) break;
           chatClient.sendMessage(message);
         }
       } catch (UnknownHostException unknownHostException) {
