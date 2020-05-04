@@ -35,23 +35,42 @@ public class SimpleChatServer implements AutoCloseable {
 
   public void shutdown() {
     for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
-      simpleChatUser.sendMessage(Server.Message.SHUTDOWN_MESSAGE);
+      SendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
       try {
         simpleChatUser.disconnect();
       } catch (IOException e) {
-        System.out.println("ERROR DISCONNECTING CLIENT");
         e.printStackTrace();
       }
 
     }
   }
 
-  public void broadCastMessage(SimpleChatUser user, String message) { 
-    String formatted = MessageFormatter.formatChatMessage(user.getUsername(), message);
+  public void broadCastMessage(SimpleChatUser user, String message) {
+    String username = user.getUsername();
     for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
       if (simpleChatUser.getUserId() != user.getUserId()) {
-        simpleChatUser.sendMessage(formatted);
+        SendMessage(username, message, simpleChatUser);
       }
     }
+  }
+
+  public Boolean sendPrivateMessage(SimpleChatUser user, String recipientUsername, String message) {
+    SimpleChatUser recipient = this.simpleChatUsers.stream() // Convert the collection to a stream
+      .filter(scu -> scu.getUsername().equals(recipientUsername)) // Filter by the username we want
+      .findFirst()
+      .orElse(null);
+
+    if (recipient == null) {
+      return false;
+    }
+
+    String formattedUsername = MessageFormatter.formatPrivateMessageUsername(user.getUsername());
+    SendMessage(formattedUsername, message, recipient);
+    return true;
+  }
+
+  private void SendMessage(String username, String message, SimpleChatUser recipient) {
+    String formattedChatMessage = MessageFormatter.formatChatMessage(username, message);
+    recipient.sendMessage(formattedChatMessage);
   }
 }

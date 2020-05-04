@@ -2,10 +2,11 @@ package constant;
 
 public class MessageFormat {
   
-  public static final String COLOUR_FORMAT = "%s%s" + Display.Colour.TERMINATE_COLOUR;
+  public static final String COLOUR_FORMAT = "%s%s" + Colour.TERMINATE_COLOUR;
 
   public class Chat {
-    public static final String CHAT_MESSAGE_FORMAT = "[%s]: %s";
+    public static final String CHAT_MESSAGE_FORMAT = "[%s]: %s"; // e.g. [User1]: Hey
+    public static final String PRIVATE_MESSAGE_USERNAME_FORMAT = "private:%s"; // e.g. [private:User1]
   }
 
   public class Client {

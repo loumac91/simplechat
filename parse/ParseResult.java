@@ -9,6 +9,10 @@ public class ParseResult<T> {
     this.value = value;
   }
 
+  public ParseResult(Boolean isValid) {
+    this.isValid = isValid;
+  }
+
   public Boolean getIsValid() {
     return this.isValid;
   }

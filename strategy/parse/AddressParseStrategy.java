@@ -20,6 +20,6 @@ public class AddressParseStrategy implements ParseStrategy<String> {
     Integer noDotsLength = input.replace(".", "").length();
     Boolean containsThreeDots = (length - noDotsLength) == 3;
     
-    return input ==  Server.DEFAULT_ADDRESS || containsThreeDots;
+    return input == Server.DEFAULT_ADDRESS || containsThreeDots;
   }
 }

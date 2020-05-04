@@ -5,7 +5,7 @@ import constant.MessageFormat;
 public class MessageFormatter {
 
   // COLOUR
-  public static String formatStringColour(String colour, String s) { // USE enum?
+  public static String formatStringColour(String colour, String s) {
      return baseFormat(MessageFormat.COLOUR_FORMAT, colour, s);
   }
 
@@ -13,6 +13,10 @@ public class MessageFormatter {
 
   public static String formatChatMessage(String username, String message) {
     return baseFormat(MessageFormat.Chat.CHAT_MESSAGE_FORMAT, username, message);
+  }
+
+  public static String formatPrivateMessageUsername(String username) {
+    return baseFormat(MessageFormat.Chat.PRIVATE_MESSAGE_USERNAME_FORMAT, username);
   }
 
   // CLIENT

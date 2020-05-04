@@ -7,7 +7,11 @@ public class PortParseStrategy extends IntegerParser implements ParseStrategy<In
 
   public ParseResult<Integer> parse(String input) {
     Integer value = super.parseInteger(input);
-    Boolean isValid = value != null && (value >= Port.LOWER_PORT_RANGE && value <= Port.UPPER_PORT_RANGE);
+    
+    Boolean isValid = value != null 
+      && value >= Port.LOWER_PORT_RANGE 
+      && value <= Port.UPPER_PORT_RANGE;
+    
     return new ParseResult<Integer>(isValid, value);
   }
 }

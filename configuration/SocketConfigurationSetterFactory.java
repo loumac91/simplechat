@@ -7,7 +7,7 @@ import parse.ParseResult;
 
 public class SocketConfigurationSetterFactory {
 
-  public static BiConsumer<String, SocketConfiguration> addressSetter = 
+  public final static BiConsumer<String, SocketConfiguration> addressSetter = 
     (value, socketConfiguration) -> {
       ParseResult<String> parseResult = new AddressParseStrategy().parse(value);
       if (parseResult.getIsValid()) {
@@ -15,7 +15,7 @@ public class SocketConfigurationSetterFactory {
       }
     };
 
-  public static BiConsumer<String, SocketConfiguration> portSetter = 
+  public final static BiConsumer<String, SocketConfiguration> portSetter = 
     (value, socketConfiguration) -> {
       ParseResult<Integer> parseResult = new PortParseStrategy().parse(value);
       if (parseResult.getIsValid()) {

@@ -33,8 +33,14 @@ public class ChatClient {
         
         // Wait for Server Welcome Message
         String welcomeMessage = serverInputReader.readLine();
-        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Display.Colour.GREEN, welcomeMessage);
+        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Client.Display.PRIVATE_MESSAGE_COLOUR, welcomeMessage);
         System.out.println(formattedWelcomeMessage);
+
+        // Then print out instructions
+        String serverMessageInformation = "";
+
+        // Server messages will appear in white
+        // private messages will appear in blue with a private: username prefix
 
         // 4. Start (Runnable) handler for simplechat Server messages
         ServerMessageHandler serverMessageHandler = new ServerMessageHandler(chatClient, inputReader, serverInputReader);

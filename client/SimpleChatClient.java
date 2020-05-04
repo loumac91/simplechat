@@ -42,7 +42,6 @@ public class SimpleChatClient implements AutoCloseable  {
 
   @Override
   public void close() throws IOException {
-    // this.streamWriter.close();
     this.socket.close();
   }
 
