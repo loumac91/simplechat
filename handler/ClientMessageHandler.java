@@ -46,14 +46,13 @@ public class ClientMessageHandler extends BaseHandler {
 
         this.chatServer.broadCastMessage(this.chatUser, message);
       } catch (IOException ioException) {
+        this.running = false;
         String userDisconnectMessage = MessageFormatter.formatUserDisconnectedMessage(this.chatUser.getUsername());
         System.out.println(MessageFormatter.formatServerLog(userDisconnectMessage));
         this.chatServer.removeUser(this.chatUser);
         this.chatServer.broadCastMessage(Server.USERNAME, this.chatUser.getUserId(), userDisconnectMessage);
         
         System.out.println(MessageFormatter.formatException(ioException));
-      } finally {
-        this.running = false;
       }
     }
   }

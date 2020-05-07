@@ -23,6 +23,7 @@ public class MessageFormat {
     public static final String LOG = "[%s]: %s";
     public static final String SERVER_STARTING_UP = "simplechat server attempting to start up on \"%s:%d\"";
     public static final String SERVER_RUNNING = "simplechat Server running on \"%s:%d\"";
+    public static final String USERNAME_ALREADY_EXISTS = "\"%s\" is a username that already exists, please provide a different one";
     public static final String USER_JOINED_MESSAGE = "%s has joined the chat";
     public static final String USER_DISCONNECTED_MESSAGE = "%s has left the chat";
   }

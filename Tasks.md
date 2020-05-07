@@ -14,7 +14,10 @@ Add Chat Bot client
 Final refactor + consistency checks
 
 close server without any connected clients
-validate username unique
+
+
+USER INPUT PARSE
+parse unique user name
 
 ## Test cases
 

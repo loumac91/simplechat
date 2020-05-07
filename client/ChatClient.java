@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import handler.ServerMessageHandler;
+import util.StringUtils;
 import configuration.*;
 import constant.*;
 import format.MessageFormatter;
@@ -25,18 +26,30 @@ public class ChatClient {
         String connectedMessage = MessageFormatter.formatConnectedMessage(socketConfiguration.address, socketConfiguration.port);
         System.out.println(MessageFormatter.formatStringColour(Colour.GREEN, connectedMessage));
 
-        // 2. Get Client username
-        System.out.print(Client.Prompt.USERNAME_PROMPT);
-        // VALIDATE TILL NOT NULL
-        String username = inputReader.readLine();
-
-        // 3. Post username to simplechat Server
-        chatClient.sendMessage(username); // No contract here, just convention driven
         BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(chatClient.getReadStream()));
         
+        // 2. Get Client username
+        String username = "";
+        String response = "";
+        Boolean invalidUsername = true;
+        while (invalidUsername) {
+          System.out.print(Client.Prompt.USERNAME_PROMPT);          
+          username = inputReader.readLine();
+          if (StringUtils.isNullOrEmpty(username)) {
+            System.out.println("Cannot be null or empty");
+            continue;
+          }
+          chatClient.sendMessage(username);
+          response = serverInputReader.readLine();
+          invalidUsername = response.startsWith("[SERVER]");
+          if (invalidUsername) {
+            String formatted = MessageFormatter.formatStringColour(Colour.WHITE, response);
+            System.out.println(formatted);
+          }
+        }
+
         // Wait for Server Welcome Message
-        String welcomeMessage = serverInputReader.readLine();
-        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Colour.GREEN, welcomeMessage);
+        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Colour.GREEN, response);
         System.out.println(formattedWelcomeMessage);
 
         String serverAnnouncementsInfoMessage = MessageFormatter.formatServerAnnouncementsInfoMessage(Colour.WHITE, "WHITE");

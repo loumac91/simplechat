@@ -3,7 +3,6 @@ package format;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import constant.MessageFormat;
 
@@ -74,6 +73,10 @@ public class MessageFormatter {
 
   public static String formatServerRunningMessage(String host, int port) {
     return baseFormat(MessageFormat.Server.SERVER_RUNNING, host, port);
+  }
+
+  public static String formatUsernameAlreadyExistsMessage(String username) {
+    return baseFormat(MessageFormat.Server.USERNAME_ALREADY_EXISTS, username);
   }
 
   public static String formatUserJoinedMessage(String username) {

@@ -63,10 +63,7 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public Boolean sendPrivateMessage(SimpleChatUser user, String recipientUsername, String message) {
-    SimpleChatUser recipient = this.simpleChatUsers.stream()
-      .filter(scu -> scu.getUsername().equals(recipientUsername))
-      .findFirst()
-      .orElse(null);
+    SimpleChatUser recipient = getChatUser(recipientUsername);
 
     if (recipient == null) {
       return false;
@@ -78,8 +75,18 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public void sendErrorMessage(SimpleChatUser user, String error) {
+    sendMessage(Server.USERNAME, error, user);
+  }
 
-    sendMessage(Server.USERNAME, "", user);
+  public SimpleChatUser getChatUser(String username) {
+    return this.simpleChatUsers.stream()
+    .filter(scu -> scu.getUsername().equals(username))
+    .findFirst()
+    .orElse(null);
+  }
+
+  public ArrayList<SimpleChatUser> getChatUsers() {
+    return new ArrayList<SimpleChatUser>(this.simpleChatUsers);
   }
 
   private void sendMessage(String username, String message, SimpleChatUser recipient) {

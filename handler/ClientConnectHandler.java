@@ -1,11 +1,12 @@
 package handler;
 
-import server.SimpleChatServer;
-import server.SimpleChatUser;
+import java.io.IOException;
 import java.net.Socket;
 
 import constant.Server;
 import format.MessageFormatter;
+import server.SimpleChatServer;
+import server.SimpleChatUser;
 
 public class ClientConnectHandler extends BaseHandler {
 
@@ -22,15 +23,16 @@ public class ClientConnectHandler extends BaseHandler {
       try {
         Socket chatClient = this.chatServer.getNextClient();
 
-        // By design, username is first message from client due to constructor calling .readLine()
         SimpleChatUser chatUser = new SimpleChatUser(chatClient);
+
+        String username = getUsername(chatUser);
+        chatUser.setUsername(username);
 
         this.chatServer.addUser(chatUser);
 
-        String username = chatUser.getUsername(); 
         String formattedUserJoinedMessage = MessageFormatter.formatUserJoinedMessage(username);
         System.out.println(MessageFormatter.formatServerLog(formattedUserJoinedMessage));
-        
+
         String welcomeMessage = MessageFormatter.formatWelcomeMessage(username);
         chatUser.sendMessage(welcomeMessage);
 
@@ -41,8 +43,24 @@ public class ClientConnectHandler extends BaseHandler {
         clientMessageHandlerThread.start();
       } catch (Exception e) {
         this.running = false;
-        System.out.println("Exception in ClientConnectHandler" + e.getClass().getCanonicalName());
+        System.out.println(MessageFormatter.formatException(e));
       }
     }
+  }
+
+  private String getUsername(SimpleChatUser chatUser) throws IOException {
+    String username = chatUser.readMessage();
+    SimpleChatUser existingUser = this.chatServer.getChatUser(username);
+    if (existingUser != null) {
+      Boolean invalidUsername = true;
+      while (invalidUsername) {
+        String invalidUsernameMessage = MessageFormatter.formatUsernameAlreadyExistsMessage(username);
+        this.chatServer.sendErrorMessage(chatUser, invalidUsernameMessage);
+        username = chatUser.readMessage();
+        invalidUsername = this.chatServer.getChatUser(username) != null;
+      }
+    }
+
+    return username;
   }
 }

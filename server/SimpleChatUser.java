@@ -3,6 +3,8 @@ package server;
 import java.io.*;
 import java.net.Socket;
 
+import util.StringUtils;
+
 public class SimpleChatUser {
   private static int userIdCount = 0; // Counter across all SimpleChatUser instances
   
@@ -10,14 +12,13 @@ public class SimpleChatUser {
   private final BufferedReader inputReader;
   private final PrintWriter streamWriter;
   private final int userId;
-  private final String username;
+  private String username;
 
   public SimpleChatUser(Socket userSocket) throws IOException {
     this.userSocket = userSocket;
     this.inputReader = new BufferedReader(new InputStreamReader(userSocket.getInputStream()));
     this.streamWriter = new PrintWriter(userSocket.getOutputStream(), true);
     this.userId = ++userIdCount;
-    this.username = this.inputReader.readLine();
   }
 
   public int getUserId() {
@@ -25,7 +26,13 @@ public class SimpleChatUser {
   }
 
   public String getUsername() {
-    return this.username;
+    return StringUtils.isNullOrEmpty(this.username) 
+      ? Integer.toString(this.userId) 
+      : this.username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 
   public void sendMessage(String message) {
