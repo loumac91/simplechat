@@ -1,25 +1,41 @@
 package format;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 import constant.MessageFormat;
 
 public class MessageFormatter {
 
-  // COLOUR
-  public static String formatStringColour(String colour, String s) {
-     return baseFormat(MessageFormat.COLOUR_FORMAT, colour, s);
+  private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(MessageFormat.TIMESTAMP);
+
+  public static String formatException(Exception exception) {
+    return baseFormat(MessageFormat.EXCEPTION, exception.getClass().getName(), exception.getMessage());
   }
 
-  // CHAT
+  //#region COLOUR
+
+  public static String formatStringColour(String colour, String s) {
+     return baseFormat(MessageFormat.COLOUR, colour, s);
+  }
+
+  //#endregion
+
+  //#region CHAT
 
   public static String formatChatMessage(String username, String message) {
-    return baseFormat(MessageFormat.Chat.CHAT_MESSAGE_FORMAT, username, message);
+    return baseFormat(MessageFormat.Chat.CHAT_MESSAGE, username, message);
   }
 
   public static String formatPrivateMessageUsername(String username) {
-    return baseFormat(MessageFormat.Chat.PRIVATE_MESSAGE_USERNAME_FORMAT, username);
+    return baseFormat(MessageFormat.Chat.PRIVATE_MESSAGE_USERNAME, username);
   }
 
-  // CLIENT
+  //#endregion
+
+  //#region CLIENT
 
   public static String formatConnectingMessage(String host, int port) {
     return baseFormat(MessageFormat.Client.CONNECTING, host, port);
@@ -29,17 +45,48 @@ public class MessageFormatter {
     return baseFormat(MessageFormat.Client.CONNECTED, host, port);
   }
 
-  // SERVER
+  public static String formatWelcomeMessage(String username) {
+    return baseFormat(MessageFormat.Client.USER_WELCOME_MESSAGE, username);
+  }
+
+  public static String formatServerAnnouncementsInfoMessage(String colour, String colourName) {
+    String colourFormatted = formatStringColour(colour, colourName);
+    return baseFormat(MessageFormat.Client.SERVER_ANNOUNCEMENT_INFO, colourFormatted);
+  }
+
+  public static String formatPrivateMessagesInfoMessage(String colour, String colourName) {
+    String colourFormatted = formatStringColour(colour, colourName);
+    return baseFormat(MessageFormat.Client.PRIVATE_MESSAGES_INFO, colourFormatted);
+  }
+
+  //#endregion
+
+  //#region SERVER
+
+  public static String formatServerLog(String log) {
+    String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(dateTimeFormatter);
+    return baseFormat(MessageFormat.Server.LOG, timeStamp, log);
+  }
+
+  public static String formatServerStartingUpMessage(String host, int port) {
+    return baseFormat(MessageFormat.Server.SERVER_STARTING_UP, host, port);
+  }
 
   public static String formatServerRunningMessage(String host, int port) {
     return baseFormat(MessageFormat.Server.SERVER_RUNNING, host, port);
   }
 
-  public static String formatWelcomeMessage(String username) {
-    return baseFormat(MessageFormat.Server.USER_WELCOME_MESSAGE, username);
+  public static String formatUserJoinedMessage(String username) {
+    return baseFormat(MessageFormat.Server.USER_JOINED_MESSAGE, username);
+  }
+
+  public static String formatUserDisconnectedMessage(String username) {
+    return baseFormat(MessageFormat.Server.USER_DISCONNECTED_MESSAGE, username);
   }
 
   private static String baseFormat(String format, Object... args) {
     return String.format(format, args);
   }
+
+  //#endregion
 }

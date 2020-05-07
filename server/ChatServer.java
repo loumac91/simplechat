@@ -17,9 +17,13 @@ public class ChatServer {
       .withPortMapper(new SocketConfigurationMapper(Server.Param.PORT, SocketConfigurationSetterFactory.portSetter))
       .buildFromCommandLine(args);
 
+    String serverStartingUpMessage = MessageFormatter.formatServerStartingUpMessage(socketConfiguration.address, socketConfiguration.port);
+    System.out.println(MessageFormatter.formatStringColour(Colour.YELLOW, serverStartingUpMessage));
+
     // 1. Run (AutoCloseable) Host
     try (SimpleChatServer chatServer = new SimpleChatServer(socketConfiguration)) {
-      System.out.println(MessageFormatter.formatServerRunningMessage(socketConfiguration.address, socketConfiguration.port));
+      String serverRunningMessage = MessageFormatter.formatServerRunningMessage(socketConfiguration.address, socketConfiguration.port);
+      System.out.println(MessageFormatter.formatStringColour(Colour.GREEN, serverRunningMessage));
 
       // Thread for handling Connectings
       ClientConnectHandler clientConnectHandler = new ClientConnectHandler(chatServer);
@@ -36,12 +40,15 @@ public class ChatServer {
           }
         } catch (Exception e) {
           running = false;
+          System.out.println("Exception in ChatServer" + e.getClass().getCanonicalName());
         }
       }
     } catch (BindException bindException) {
-      bindException.getStackTrace();
+      System.out.println(MessageFormatter.formatException(bindException));
     } catch (IOException ioException) {
-      ioException.printStackTrace();
+      System.out.println(MessageFormatter.formatException(ioException));
+    } catch (Exception exception) {
+      System.out.println(MessageFormatter.formatException(exception));  
     }
   }
 }

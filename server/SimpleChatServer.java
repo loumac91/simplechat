@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.net.BindException;
+
+import collection.ThreadSafeCollection;
 import configuration.SocketConfiguration;
 import constant.Server;
 import format.MessageFormatter;
@@ -12,12 +14,12 @@ import format.MessageFormatter;
 public class SimpleChatServer implements AutoCloseable {
   private final int port;
 
-  private final ArrayList<SimpleChatUser> simpleChatUsers; // this might not be thread safe
+  private final ThreadSafeCollection<SimpleChatUser> simpleChatUsers;
   private final ServerSocket serverSocket;
 
   public SimpleChatServer(SocketConfiguration socketConfiguration) throws BindException, IOException {
     this.port = socketConfiguration.port;
-    this.simpleChatUsers = new ArrayList<SimpleChatUser>();
+    this.simpleChatUsers = new ThreadSafeCollection<SimpleChatUser>(new ArrayList<SimpleChatUser>());
     this.serverSocket = new ServerSocket(this.port);
   }
 
@@ -33,30 +35,36 @@ public class SimpleChatServer implements AutoCloseable {
     this.simpleChatUsers.add(user);
   }
 
+  public void removeUser(SimpleChatUser user) {
+    this.simpleChatUsers.remove(user);
+  }
+
   public void shutdown() {
     for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
-      SendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
+      sendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
       try {
         simpleChatUser.disconnect();
       } catch (IOException e) {
-        e.printStackTrace();
+        System.out.println("Error disconnecting user: " + simpleChatUser.getUsername());
       }
-
-    }
+    }    
   }
 
   public void broadCastMessage(SimpleChatUser user, String message) {
-    String username = user.getUsername();
+    broadCastMessage(user.getUsername(), user.getUserId(), message);
+  }
+
+  public void broadCastMessage(String senderUsername, Integer excludedUserId, String message) {
     for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
-      if (simpleChatUser.getUserId() != user.getUserId()) {
-        SendMessage(username, message, simpleChatUser);
+      if (simpleChatUser.getUserId() != excludedUserId) {
+        sendMessage(senderUsername, message, simpleChatUser);
       }
     }
   }
 
   public Boolean sendPrivateMessage(SimpleChatUser user, String recipientUsername, String message) {
-    SimpleChatUser recipient = this.simpleChatUsers.stream() // Convert the collection to a stream
-      .filter(scu -> scu.getUsername().equals(recipientUsername)) // Filter by the username we want
+    SimpleChatUser recipient = this.simpleChatUsers.stream()
+      .filter(scu -> scu.getUsername().equals(recipientUsername))
       .findFirst()
       .orElse(null);
 
@@ -65,11 +73,16 @@ public class SimpleChatServer implements AutoCloseable {
     }
 
     String formattedUsername = MessageFormatter.formatPrivateMessageUsername(user.getUsername());
-    SendMessage(formattedUsername, message, recipient);
+    sendMessage(formattedUsername, message, recipient);
     return true;
   }
 
-  private void SendMessage(String username, String message, SimpleChatUser recipient) {
+  public void sendErrorMessage(SimpleChatUser user, String error) {
+
+    sendMessage(Server.USERNAME, "", user);
+  }
+
+  private void sendMessage(String username, String message, SimpleChatUser recipient) {
     String formattedChatMessage = MessageFormatter.formatChatMessage(username, message);
     recipient.sendMessage(formattedChatMessage);
   }

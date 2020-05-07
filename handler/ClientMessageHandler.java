@@ -1,20 +1,24 @@
 package handler;
 
 import java.io.IOException;
+
+import constant.Server;
+import format.MessageFormatter;
 import server.SimpleChatServer;
 import server.SimpleChatUser;
-import constant.Message;
 import parse.*;
 
 public class ClientMessageHandler extends BaseHandler {
 
   private final SimpleChatServer chatServer;
   private final SimpleChatUser chatUser;
+  private final MessageParser messageParser;
 
   public ClientMessageHandler(SimpleChatServer chatServer, SimpleChatUser chatUser) {
     super();
     this.chatServer = chatServer;
-    this.chatUser = chatUser;    
+    this.chatUser = chatUser;
+    this.messageParser = new MessageParser();
   }
 
   public void run() {
@@ -23,32 +27,34 @@ public class ClientMessageHandler extends BaseHandler {
       try {
         String message = this.chatUser.readMessage();
 
-        Boolean containsPrivateMessageToken = message.contains(Message.PRIVATE_MESSAGE_TOKEN);
-        if (containsPrivateMessageToken) {
-          ParseResult<parse.Message> privateMessageParseResult = new MessageParser().parsePrivateMessage(message);
-          if (privateMessageParseResult.getIsValid()) {
-            parse.Message privateMessage = privateMessageParseResult.getValue();
-            Boolean sent = this.chatServer.sendPrivateMessage(
-              this.chatUser, 
-              privateMessage.getUsername(), 
-              privateMessage.getMessage()
-            );
+        ParseResult<Message> privateMessageParseResult = this.messageParser.parsePrivateMessage(message);
+        if (privateMessageParseResult.getIsValid()) {
+          Message privateMessage = privateMessageParseResult.getValue();
+          // TODO CHECK USER EXISTS
+          Boolean sent = this.chatServer.sendPrivateMessage(
+            this.chatUser, 
+            privateMessage.getUsername(), 
+            privateMessage.getMessage()
+          );
 
-            if (sent) {
-              continue;
-            }
+          if (sent) {
+            continue;
+          } else {
+            this.chatServer.sendErrorMessage(this.chatUser, "Could not send to " + privateMessage.getUsername());
           }
         }
 
         this.chatServer.broadCastMessage(this.chatUser, message);
       } catch (IOException ioException) {
+        String userDisconnectMessage = MessageFormatter.formatUserDisconnectedMessage(this.chatUser.getUsername());
+        System.out.println(MessageFormatter.formatServerLog(userDisconnectMessage));
+        this.chatServer.removeUser(this.chatUser);
+        this.chatServer.broadCastMessage(Server.USERNAME, this.chatUser.getUserId(), userDisconnectMessage);
+        
+        System.out.println(MessageFormatter.formatException(ioException));
+      } finally {
         this.running = false;
-        ioException.printStackTrace();
       }
     }
   }
-
-  // private Boolean isPrivateMessage(String message) {
-  //   // trim start?
-  // }
 }

@@ -13,13 +13,10 @@ public class SimpleChatClient implements AutoCloseable  {
   private Socket socket;
   private PrintWriter streamWriter;
 
-  public SimpleChatClient(SocketConfiguration clientSocketConfiguration) {
+  public SimpleChatClient(SocketConfiguration clientSocketConfiguration) throws UnknownHostException, IOException {
     this.address = clientSocketConfiguration.address;
     this.port = clientSocketConfiguration.port;
-  }
-
-  public void connect() throws UnknownHostException, IOException {
-    this.connectSocket();
+    this.socket = new Socket(this.address, this.port);
     this.streamWriter = new PrintWriter(this.socket.getOutputStream(), true);
   }
 
@@ -43,9 +40,5 @@ public class SimpleChatClient implements AutoCloseable  {
   @Override
   public void close() throws IOException {
     this.socket.close();
-  }
-
-  private void connectSocket() throws UnknownHostException, IOException {
-    this.socket = new Socket(this.address, this.port);
   }
 }

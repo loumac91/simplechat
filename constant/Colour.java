@@ -1,5 +1,6 @@
 package constant;
 
+// TODO - REMOVE COLOURS NOT USED
 public class Colour {
   public static final String TERMINATE_COLOUR = "\033[0m"; // This is ANSI Text reset 
   public static final String GREEN = "\u001B[32m";

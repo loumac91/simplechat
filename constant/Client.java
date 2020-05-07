@@ -2,10 +2,10 @@ package constant;
 
 public class Client {
 
-  public class Display {
-    public static final String CLIENT_MESSAGE_COLOUR = Colour.GREEN;
-    public static final String SERVER_ANNOUNCEMENT_COLOUR = Colour.WHITE;
-    public static final String PRIVATE_MESSAGE_COLOUR = Colour.CYAN;
+  public class Error {
+    public static final String UNKNOWN_HOST = "Unable to determine IP address of host";
+    public static final String CONNECT = "Error occured while attempting to connect to server socket";
+    public static final String CONNECTION_INTERRUPTED = "Connection to server was interrupted";
   }
 
   public class Prompt {

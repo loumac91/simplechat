@@ -1,6 +1,7 @@
 package client;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import handler.ServerMessageHandler;
 import configuration.*;
@@ -17,14 +18,16 @@ public class ChatClient {
         .withPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
         .buildFromCommandLine(args);
 
+      String connectingMessage = MessageFormatter.formatConnectingMessage(socketConfiguration.address, socketConfiguration.port);
+      System.out.println(MessageFormatter.formatStringColour(Colour.YELLOW, connectingMessage));
       // 1. Establish (AutoCloseable) connection to simplechat Server 
       try (SimpleChatClient chatClient = new SimpleChatClient(socketConfiguration)) {
-        System.out.println(MessageFormatter.formatConnectingMessage(socketConfiguration.address, socketConfiguration.port));
-        chatClient.connect();
-        System.out.println(MessageFormatter.formatConnectedMessage(socketConfiguration.address, socketConfiguration.port));
+        String connectedMessage = MessageFormatter.formatConnectedMessage(socketConfiguration.address, socketConfiguration.port);
+        System.out.println(MessageFormatter.formatStringColour(Colour.GREEN, connectedMessage));
 
         // 2. Get Client username
         System.out.print(Client.Prompt.USERNAME_PROMPT);
+        // VALIDATE TILL NOT NULL
         String username = inputReader.readLine();
 
         // 3. Post username to simplechat Server
@@ -33,31 +36,32 @@ public class ChatClient {
         
         // Wait for Server Welcome Message
         String welcomeMessage = serverInputReader.readLine();
-        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Client.Display.PRIVATE_MESSAGE_COLOUR, welcomeMessage);
+        String formattedWelcomeMessage = MessageFormatter.formatStringColour(Colour.GREEN, welcomeMessage);
         System.out.println(formattedWelcomeMessage);
 
-        // Then print out instructions
-        String serverMessageInformation = "";
-
-        // Server messages will appear in white
-        // private messages will appear in blue with a private: username prefix
+        String serverAnnouncementsInfoMessage = MessageFormatter.formatServerAnnouncementsInfoMessage(Colour.WHITE, "WHITE");
+        String privateMessagesInfoMessage = MessageFormatter.formatPrivateMessagesInfoMessage(Colour.CYAN, "CYAN");
+        System.out.println(serverAnnouncementsInfoMessage);
+        System.out.println(privateMessagesInfoMessage);
 
         // 4. Start (Runnable) handler for simplechat Server messages
-        ServerMessageHandler serverMessageHandler = new ServerMessageHandler(chatClient, inputReader, serverInputReader);
+        ServerMessageHandler serverMessageHandler = new ServerMessageHandler(serverInputReader);
         Thread serverMessageHandlerThread = new Thread(serverMessageHandler);
         serverMessageHandlerThread.start();
 
         // 5. Handle user input for sending messages and parsing commands
-        String message = "";
         while (true) {
-          message = inputReader.readLine();
-          if (!chatClient.isConnected()) break;
+          String message = inputReader.readLine();
           chatClient.sendMessage(message);
         }
       } catch (UnknownHostException unknownHostException) {
-        unknownHostException.getStackTrace();
-      } catch (IOException ioException) {
-        ioException.printStackTrace();
+        System.out.println(Client.Error.UNKNOWN_HOST);
+      } catch (ConnectException connectException) {
+        System.out.println(Client.Error.CONNECT);
+      } catch (IOException ioException) {   
+        System.out.println(MessageFormatter.formatException(ioException));
+      } catch (Exception exception) {
+        System.out.println(MessageFormatter.formatException(exception));
       }
     }
 }
