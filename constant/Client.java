@@ -2,6 +2,8 @@ package constant;
 
 public class Client {
 
+  public static final String SHUTDOWN = "Client shutting down";
+
   public class Error {
     public static final String UNKNOWN_HOST = "Unable to determine IP address of host";
     public static final String CONNECT = "Error occured while attempting to connect to server socket";

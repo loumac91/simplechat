@@ -59,7 +59,7 @@ public class SocketConfigurationBuilder {
   }
 
   private ArrayList<SocketConfigurationMapper> createConfigurationMappers() {
-    ArrayList<SocketConfigurationMapper> configurationMappers = new ArrayList<>();
+    ArrayList<SocketConfigurationMapper> configurationMappers = new ArrayList<SocketConfigurationMapper>();
     if (this.addressConfigurationMapper != null) {
       configurationMappers.add(this.addressConfigurationMapper);
     }

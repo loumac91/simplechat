@@ -39,15 +39,33 @@ public class SimpleChatServer implements AutoCloseable {
     this.simpleChatUsers.remove(user);
   }
 
+  public SimpleChatUser getChatUser(String username) {
+    synchronized (this.simpleChatUsers) {
+      return this.simpleChatUsers
+        .stream()
+        .filter(scu -> scu.getUsername().equals(username))
+        .findFirst()
+        .orElse(null);
+    }
+  }
+
+  public ArrayList<SimpleChatUser> getChatUsers() {
+    synchronized (this.simpleChatUsers) {
+      return new ArrayList<SimpleChatUser>(this.simpleChatUsers);
+    }
+  }
+
   public void shutdown() {
-    for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
-      sendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
-      try {
-        simpleChatUser.disconnect();
-      } catch (IOException e) {
-        System.out.println("Error disconnecting user: " + simpleChatUser.getUsername());
-      }
-    }    
+    synchronized (this.simpleChatUsers) {
+      for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
+        sendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
+        try {
+          simpleChatUser.disconnect();
+        } catch (IOException e) {
+          System.out.println("Error disconnecting user: " + simpleChatUser.getUsername());
+        }
+      }   
+    } 
   }
 
   public void broadCastMessage(SimpleChatUser user, String message) {
@@ -55,38 +73,22 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public void broadCastMessage(String senderUsername, Integer excludedUserId, String message) {
-    for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
-      if (simpleChatUser.getUserId() != excludedUserId) {
-        sendMessage(senderUsername, message, simpleChatUser);
+    synchronized (this.simpleChatUsers) {
+      for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
+        if (simpleChatUser.getUserId() != excludedUserId) {
+          sendMessage(senderUsername, message, simpleChatUser);
+        }
       }
     }
   }
 
-  public Boolean sendPrivateMessage(SimpleChatUser user, String recipientUsername, String message) {
-    SimpleChatUser recipient = getChatUser(recipientUsername);
-
-    if (recipient == null) {
-      return false;
-    }
-
-    String formattedUsername = MessageFormatter.formatPrivateMessageUsername(user.getUsername());
+  public void sendPrivateMessage(String sender, String message, SimpleChatUser recipient) {
+    String formattedUsername = MessageFormatter.formatPrivateMessageUsername(sender);
     sendMessage(formattedUsername, message, recipient);
-    return true;
   }
 
   public void sendErrorMessage(SimpleChatUser user, String error) {
     sendMessage(Server.USERNAME, error, user);
-  }
-
-  public SimpleChatUser getChatUser(String username) {
-    return this.simpleChatUsers.stream()
-    .filter(scu -> scu.getUsername().equals(username))
-    .findFirst()
-    .orElse(null);
-  }
-
-  public ArrayList<SimpleChatUser> getChatUsers() {
-    return new ArrayList<SimpleChatUser>(this.simpleChatUsers);
   }
 
   private void sendMessage(String username, String message, SimpleChatUser recipient) {

@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.SocketException;
 
 import util.StringUtils;
-import constant.*;
+import constant.Ansi.Colour;
+import constant.Client;
 import format.MessageFormatter;
 import parse.MessageParser;
 
@@ -24,7 +25,7 @@ public class ServerMessageHandler extends InputReaderHandler {
         String serverMessage = this.inputReader.readLine();
 
         if (StringUtils.IsNull(serverMessage)) {
-          System.exit(0); // Scenario here is that server has closed socket, there is no further reason to run ChatClient so shutdown.
+          shutdownClient(); // Scenario here is that server has closed socket, there is no further reason to run ChatClient so shutdown.
           // Execution on main thread will have blocked on BufferedReader.readLine() - it's underlying readstream is System.in
           // Why System.exit(0)? Issue lies in main thread, the BufferedReader.readLine() within the while loop that reads user input
           // will block forever. It uses the System.in stream which does not unblock the readLine() call even when the stream is closed.
@@ -46,7 +47,7 @@ public class ServerMessageHandler extends InputReaderHandler {
       }
     }
 
-    System.exit(0);
+    shutdownClient();
   }
 
   private String getColouredServerMessage(String serverMessage) {
@@ -69,5 +70,10 @@ public class ServerMessageHandler extends InputReaderHandler {
 
   private Boolean isPrivateMessage(String message) {
     return this.messageParser.isPrivateMessage(message);
+  }
+
+  private void shutdownClient() {
+    System.out.println(Client.SHUTDOWN);
+    System.exit(0);
   }
 }

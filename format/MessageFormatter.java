@@ -87,6 +87,10 @@ public class MessageFormatter {
     return baseFormat(MessageFormat.Server.USER_DISCONNECTED_MESSAGE, username);
   }
 
+  public static String formatPrivateMessageRecipientNotFound(String username) {
+    return baseFormat(MessageFormat.Server.PRIVATE_MESSAGE_RECIPIENT_NOT_FOUND, username);
+  }
+
   private static String baseFormat(String format, Object... args) {
     return String.format(format, args);
   }

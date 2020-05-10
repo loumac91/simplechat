@@ -2,7 +2,7 @@
 
 Remove unused colours
 
-Add red colour for when they can't
+
 Handling when server shutdown by client still in accept
 Can't connect to server from client
 Server closes down
@@ -31,3 +31,7 @@ After submitting name
 ### Server
 
 - Client closes connection
+
+--
+bot could respond to
+what day of the week is it?

@@ -30,18 +30,17 @@ public class ClientMessageHandler extends BaseHandler {
         ParseResult<Message> privateMessageParseResult = this.messageParser.parsePrivateMessage(message);
         if (privateMessageParseResult.getIsValid()) {
           Message privateMessage = privateMessageParseResult.getValue();
-          // TODO CHECK USER EXISTS
-          Boolean sent = this.chatServer.sendPrivateMessage(
-            this.chatUser, 
-            privateMessage.getUsername(), 
-            privateMessage.getMessage()
-          );
-
-          if (sent) {
-            continue;
+          String recipientName = privateMessage.getUsername();
+          SimpleChatUser recipient = this.chatServer.getChatUser(privateMessage.getUsername());
+          
+          if (recipient != null) {
+            this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessage(), recipient);            
           } else {
-            this.chatServer.sendErrorMessage(this.chatUser, "Could not send to " + privateMessage.getUsername());
+            String privateMessageError = MessageFormatter.formatPrivateMessageRecipientNotFound(recipientName);
+            this.chatServer.sendErrorMessage(this.chatUser, privateMessageError);
           }
+
+          continue;
         }
 
         this.chatServer.broadCastMessage(this.chatUser, message);

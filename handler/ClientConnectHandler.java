@@ -2,7 +2,9 @@ package handler;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 
+import constant.Client;
 import constant.Server;
 import format.MessageFormatter;
 import server.SimpleChatServer;
@@ -38,11 +40,12 @@ public class ClientConnectHandler extends BaseHandler {
 
         this.chatServer.broadCastMessage(Server.USERNAME, chatUser.getUserId(), formattedUserJoinedMessage);
 
-        ClientMessageHandler clientMessageHandler = new ClientMessageHandler(this.chatServer, chatUser);
-        Thread clientMessageHandlerThread = new Thread(clientMessageHandler);
-        clientMessageHandlerThread.start();
+        new Thread(HandlerFactory.createClientMessageHandler(this.chatServer, chatUser)).start();
+
+      } catch (SocketException socketException) {
+        System.out.println(Client.Error.CONNECTION_INTERRUPTED);
       } catch (Exception e) {
-        this.running = false;
+        // this.running = false;
         System.out.println(MessageFormatter.formatException(e));
       }
     }

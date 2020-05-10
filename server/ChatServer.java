@@ -2,10 +2,13 @@ package server;
 
 import java.io.*;
 import java.net.BindException;
-import constant.*;
+import constant.Ansi.Colour;
+import constant.Server;
+import constant.Command;
 import format.MessageFormatter;
 import configuration.*;
 import handler.ClientConnectHandler;
+import handler.HandlerFactory;
 import util.StringUtils;
 
 public class ChatServer {
@@ -26,9 +29,7 @@ public class ChatServer {
       System.out.println(MessageFormatter.formatStringColour(Colour.GREEN, serverRunningMessage));
 
       // Thread for handling Connectings
-      ClientConnectHandler clientConnectHandler = new ClientConnectHandler(chatServer);
-      Thread clientConnectHandlerThread = new Thread(clientConnectHandler);
-      clientConnectHandlerThread.start();
+      new Thread(HandlerFactory.createClientConnectHandler(chatServer)).start();
 
       Boolean running = true;
       while (running) {
