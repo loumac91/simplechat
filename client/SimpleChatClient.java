@@ -2,8 +2,9 @@ package client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+
 import configuration.SocketConfiguration;
-import format.MessageFormatter;
+import format.StringFormatter;
 
 public class SimpleChatClient extends SimpleChatClientBase  {
 
@@ -17,7 +18,7 @@ public class SimpleChatClient extends SimpleChatClientBase  {
 
   @Override
   public void sendMessage(String username, String message) {
-    String formatted = MessageFormatter.formatChatMessage(username, message);
+    String formatted = StringFormatter.formatChatMessage(username, message);
     this.sendMessage(formatted);
   }
 }

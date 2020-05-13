@@ -6,6 +6,7 @@ import java.net.Socket;
 import util.StringUtils;
 
 public class SimpleChatUser {
+  
   private static int userIdCount = 0; // Counter across all SimpleChatUser instances
   
   private final Socket userSocket;

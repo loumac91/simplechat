@@ -10,9 +10,10 @@ import configuration.SocketConfigurationSetterFactory;
 import constant.Client;
 import constant.Ansi.Colour;
 import constant.Server;
-import format.MessageFormatter;
+import format.StringFormatter;
 
 public class ChatBot {
+  
   public static void main(String[] args) {
     SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
       .withDefaultAddress(Server.DEFAULT_ADDRESS)
@@ -25,7 +26,7 @@ public class ChatBot {
       BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(bot.getReadStream()));      
 
       bot.sendMessage(constant.SimpleChatBot.NAME);
-      String formattedWelcomeMessage = MessageFormatter.formatStringColour(Colour.GREEN, serverInputReader.readLine());
+      String formattedWelcomeMessage = StringFormatter.formatStringColour(Colour.GREEN, serverInputReader.readLine());
       System.out.println(formattedWelcomeMessage);
 
       while (true) {
@@ -33,7 +34,7 @@ public class ChatBot {
         bot.sendMessage(constant.SimpleChatBot.NAME, response + "from meeee");
       }
     } catch (Exception exception) {
-      System.out.println(MessageFormatter.formatException(exception));
+      System.out.println(StringFormatter.formatException(exception));
     }
   }
 }

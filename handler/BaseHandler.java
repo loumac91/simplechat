@@ -1,8 +1,14 @@
 package handler;
 
+import parse.MessageParser;
+
 public abstract class BaseHandler implements Runnable {
 
-  public Boolean running = false;
+  protected Boolean running = false;
 
-  public BaseHandler() {  }
+  protected final MessageParser messageParser;
+
+  public BaseHandler() { 
+    this.messageParser = new MessageParser();
+   }
 }

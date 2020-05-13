@@ -1,8 +1,8 @@
 package strategy.parse;
 
-import parse.ParseResult;
+import strategy.Result;
 
 public interface ParseStrategy<T> {
 
-  ParseResult<T> parse(String input);
+  Result<T> parse(String input);
 }

@@ -3,22 +3,21 @@ package handler;
 import java.io.IOException;
 
 import constant.Server;
-import format.MessageFormatter;
+import format.StringFormatter;
 import server.SimpleChatServer;
 import server.SimpleChatUser;
 import parse.*;
+import strategy.Result;
 
 public class ClientMessageHandler extends BaseHandler {
 
   private final SimpleChatServer chatServer;
   private final SimpleChatUser chatUser;
-  private final MessageParser messageParser;
 
   public ClientMessageHandler(SimpleChatServer chatServer, SimpleChatUser chatUser) {
     super();
     this.chatServer = chatServer;
     this.chatUser = chatUser;
-    this.messageParser = new MessageParser();
   }
 
   public void run() {
@@ -27,32 +26,47 @@ public class ClientMessageHandler extends BaseHandler {
       try {
         String message = this.chatUser.readMessage();
 
-        ParseResult<Message> privateMessageParseResult = this.messageParser.parsePrivateMessage(message);
-        if (privateMessageParseResult.getIsValid()) {
-          Message privateMessage = privateMessageParseResult.getValue();
-          String recipientName = privateMessage.getUsername();
-          SimpleChatUser recipient = this.chatServer.getChatUser(privateMessage.getUsername());
-          
-          if (recipient != null) {
-            this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessage(), recipient);            
-          } else {
-            String privateMessageError = MessageFormatter.formatPrivateMessageRecipientNotFound(recipientName);
-            this.chatServer.sendErrorMessage(this.chatUser, privateMessageError);
-          }
-
+        Result<Message> privateMessageResult = this.messageParser.parsePrivateMessage(message);
+        if (privateMessageResult.getIsSuccess()) {
+          handlePrivateMessage(privateMessageResult);
           continue;
         }
 
         this.chatServer.broadCastMessage(this.chatUser, message);
       } catch (IOException ioException) {
         this.running = false;
-        String userDisconnectMessage = MessageFormatter.formatUserDisconnectedMessage(this.chatUser.getUsername());
-        System.out.println(MessageFormatter.formatServerLog(userDisconnectMessage));
-        this.chatServer.removeUser(this.chatUser);
-        this.chatServer.broadCastMessage(Server.USERNAME, this.chatUser.getUserId(), userDisconnectMessage);
-        
-        System.out.println(MessageFormatter.formatException(ioException));
+        disconnectUser();
+
+        System.out.println(StringFormatter.formatException(ioException));
       }
     }
+  }
+
+  private void handlePrivateMessage(Result<Message> privateMessageResult) {
+    Message privateMessage = privateMessageResult.getValue();
+    String recipientName = privateMessage.getUsername();
+
+    if (recipientName.equals(Server.USERNAME)) {
+      // If user private messages server, then respond with welcome message
+      String welcomeMessage = StringFormatter.formatWelcomeMessage(this.chatUser.getUsername());
+      this.chatServer.sendPrivateMessage(Server.USERNAME, welcomeMessage, this.chatUser);
+      return;
+    }
+
+    SimpleChatUser recipient = this.chatServer.getChatUser(privateMessage.getUsername());
+
+    if (recipient != null) {
+      this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessage(), recipient);
+    } else {
+      String privateMessageError = StringFormatter.formatPrivateMessageRecipientNotFound(recipientName);
+      this.chatServer.sendErrorMessage(this.chatUser, privateMessageError);
+    }
+  }
+
+  private void disconnectUser() {
+    String userDisconnectMessage = StringFormatter.formatUserDisconnectedMessage(this.chatUser.getUsername());
+    System.out.println(StringFormatter.formatServerLog(userDisconnectMessage));
+    this.chatServer.removeUser(this.chatUser);
+    this.chatServer.broadCastMessage(Server.USERNAME, this.chatUser.getUserId(), userDisconnectMessage);
   }
 }

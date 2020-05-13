@@ -1,10 +1,18 @@
 package constant;
 
-public class MessageFormat {
+public class Format {
   
-  public static final String EXCEPTION = "Exception {%s} : %s";
   public static final String COLOUR = "%s%s" + Ansi.Colour.TERMINATE_COLOUR;
   public static final String TIMESTAMP = "yyyy.MM.dd HH:mm:ss";
+
+  public class Error {
+    public static final String EXCEPTION = "Exception {%s}: \"%s\"";
+    public static final String INVALID_PORT = "%d is not a valid port number";
+    public static final String INVALID_ADDRESS = "%s is not a valid host address";
+    public static final String EMPTY_VALUE_NOT_PERMITTED = "\"%s\" must be a non empty value";
+    public static final String ERROR_DISCONNECTING_USER = "Exception thrown when trying to disconnect user: \"%s\"";
+    public static final String VALUE_CANNOT_BE_PARSED = "\"%s\" could not be parsed to type \"%s\"";
+  }
 
   public class Chat {
     public static final String CHAT_MESSAGE = "[%s]: %s"; // e.g. [User1]: Hey

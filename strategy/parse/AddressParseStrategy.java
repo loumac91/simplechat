@@ -1,20 +1,32 @@
 package strategy.parse;
 
-import parse.ParseResult;
 import util.StringUtils;
 import constant.Server;
+import format.StringFormatter;
+import strategy.Result;
 
 public class AddressParseStrategy implements ParseStrategy<String> {
 
-  public ParseResult<String> parse(String input) {
-    Boolean isValid = isValidAddressName(input);
-    return new ParseResult<String>(isValid, input);
+  private final String valueName = "address";
+
+  public Result<String> parse(String input) {
+    Result<String> result = new Result<String>();
+    String errorMessage = "";
+
+    if (StringUtils.IsNull(input)) {
+      errorMessage = StringFormatter.formatEmptyValueNotPermittedError(this.valueName);
+    } else if (!isValidAddressName(input)) {
+      errorMessage = StringFormatter.formatInvalidAddressError(input);
+    }
+
+    result.setErrorMessage(errorMessage);
+    result.setValue(input);
+
+    return result;
   }
 
+  // Currently only allows "localhost" or ip4 addresses e.g. 192.168.10.250
   private Boolean isValidAddressName(String input) {
-    if (StringUtils.IsNull(input)) {
-      return false;
-    }
     
     Integer length = input.length();
     Integer noDotsLength = input.replace(".", "").length();

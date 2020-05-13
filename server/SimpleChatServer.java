@@ -9,11 +9,12 @@ import java.net.BindException;
 import collection.ThreadSafeCollection;
 import configuration.SocketConfiguration;
 import constant.Server;
-import format.MessageFormatter;
+import format.StringFormatter;
 
 public class SimpleChatServer implements AutoCloseable {
+  
   private final int port;
-
+  private final Object lock = new Object();
   private final ThreadSafeCollection<SimpleChatUser> simpleChatUsers;
   private final ServerSocket serverSocket;
 
@@ -40,7 +41,7 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public SimpleChatUser getChatUser(String username) {
-    synchronized (this.simpleChatUsers) {
+    synchronized (this.lock) {
       return this.simpleChatUsers
         .stream()
         .filter(scu -> scu.getUsername().equals(username))
@@ -50,19 +51,20 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public ArrayList<SimpleChatUser> getChatUsers() {
-    synchronized (this.simpleChatUsers) {
+    synchronized (this.lock) {
       return new ArrayList<SimpleChatUser>(this.simpleChatUsers);
     }
   }
 
   public void shutdown() {
-    synchronized (this.simpleChatUsers) {
+    synchronized (this.lock) {
       for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
         sendMessage(Server.USERNAME, Server.Message.SHUTDOWN_MESSAGE, simpleChatUser);
         try {
           simpleChatUser.disconnect();
         } catch (IOException e) {
-          System.out.println("Error disconnecting user: " + simpleChatUser.getUsername());
+          String formatted = StringFormatter.formatExceptionDisconnectingUser(simpleChatUser.getUsername());
+          System.out.println(formatted);
         }
       }   
     } 
@@ -73,7 +75,7 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public void broadCastMessage(String senderUsername, Integer excludedUserId, String message) {
-    synchronized (this.simpleChatUsers) {
+    synchronized (this.lock) {
       for (SimpleChatUser simpleChatUser : this.simpleChatUsers) {
         if (simpleChatUser.getUserId() != excludedUserId) {
           sendMessage(senderUsername, message, simpleChatUser);
@@ -83,16 +85,21 @@ public class SimpleChatServer implements AutoCloseable {
   }
 
   public void sendPrivateMessage(String sender, String message, SimpleChatUser recipient) {
-    String formattedUsername = MessageFormatter.formatPrivateMessageUsername(sender);
+    String formattedUsername = StringFormatter.formatPrivateMessageUsername(sender);
     sendMessage(formattedUsername, message, recipient);
   }
 
-  public void sendErrorMessage(SimpleChatUser user, String error) {
+  public void sendPrivateErrorMessage(SimpleChatUser user, String error) {
+    String formattedUsername = StringFormatter.formatPrivateMessageUsername(Server.USERNAME);
+    sendMessage(formattedUsername, error, user);
+  }
+
+  public void sendErrorMessage(SimpleChatUser user, String error) {    
     sendMessage(Server.USERNAME, error, user);
   }
 
   private void sendMessage(String username, String message, SimpleChatUser recipient) {
-    String formattedChatMessage = MessageFormatter.formatChatMessage(username, message);
+    String formattedChatMessage = StringFormatter.formatChatMessage(username, message);
     recipient.sendMessage(formattedChatMessage);
   }
 }

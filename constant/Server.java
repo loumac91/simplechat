@@ -1,6 +1,7 @@
 package constant;
 
 public class Server {
+  
   public static final String DEFAULT_ADDRESS = "localhost";
   public static final int DEFAULT_PORT = 14001;
   public static final String USERNAME = "SERVER";

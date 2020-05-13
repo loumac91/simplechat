@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import constant.Message;
+import strategy.Result;
 
 public class MessageParser {
   
@@ -13,23 +14,30 @@ public class MessageParser {
   private final Pattern serverAnnouncementPattern = Pattern.compile(Message.Pattern.SERVER_ANNOUNCEMENT_PATTERN);
   private final Pattern privateMessageFormattedPattern = Pattern.compile(Message.Pattern.PRIVATE_MESSAGE_FORMATTED_PATTERN);
 
-  public ParseResult<parse.Message> parsePrivateMessage(String message) {
+  public Result<parse.Message> parsePrivateMessage(String message) {
+    Result<parse.Message> result = new Result<parse.Message>();
+    String errorMessage = "";
+    parse.Message parseMessage = null;
+
     if (!message.contains(constant.Message.PRIVATE_MESSAGE_TOKEN)) {
-      return new ParseResult<parse.Message>(false);
+      errorMessage = Message.Pattern.Error.MESSAGE_CONTAINS_NO_PRIVATE_TOKEN;
+    } else {
+      Matcher matcher = getMatcher(privateMessagePattern, message);
+
+      if (!matcher.matches()) {
+        errorMessage = Message.Pattern.Error.MESSAGE_IS_NOT_PRIVATE;
+      } else {
+        String username = matcher.group(this.usernameIndex);
+        String privateMessage = matcher.group(this.privateMessageIndex);
+    
+        parseMessage = new parse.Message(username, privateMessage);
+      }
     }
 
-    Matcher matcher = getMatcher(privateMessagePattern, message);
+    result.setErrorMessage(errorMessage);
+    result.setValue(parseMessage);
 
-    if (!matcher.matches()) {
-      return new ParseResult<parse.Message>(false);
-    }
-
-    String username = matcher.group(this.usernameIndex);
-    String privateMessage = matcher.group(this.privateMessageIndex);
-
-    parse.Message result = new parse.Message(username, privateMessage);
-
-    return new ParseResult<parse.Message>(true, result);
+    return result;
   }
 
   public Boolean isServerAnnouncement(String message) {

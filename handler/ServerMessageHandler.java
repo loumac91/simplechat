@@ -6,16 +6,12 @@ import java.net.SocketException;
 import util.StringUtils;
 import constant.Ansi.Colour;
 import constant.Client;
-import format.MessageFormatter;
-import parse.MessageParser;
+import format.StringFormatter;
 
 public class ServerMessageHandler extends InputReaderHandler {
 
-  private final MessageParser messageParser;
-
   public ServerMessageHandler(BufferedReader inputReader) {
     super(inputReader);
-    this.messageParser = new MessageParser();
   }
 
   public void run() {
@@ -39,11 +35,11 @@ public class ServerMessageHandler extends InputReaderHandler {
       } catch (SocketException socketException) {
         this.running = false;
         System.out.println(Client.Error.CONNECTION_INTERRUPTED);
-        System.out.println(MessageFormatter.formatException(socketException));
+        System.out.println(StringFormatter.formatException(socketException));
       } catch (IOException ioException) {
         this.running = false;
         System.out.println(Client.Error.CONNECTION_INTERRUPTED);
-        System.out.println(MessageFormatter.formatException(ioException));
+        System.out.println(StringFormatter.formatException(ioException));
       }
     }
 
@@ -60,7 +56,7 @@ public class ServerMessageHandler extends InputReaderHandler {
     }
 
     return colour.length() > 0 
-      ? MessageFormatter.formatStringColour(colour, serverMessage)
+      ? StringFormatter.formatStringColour(colour, serverMessage)
       : serverMessage;
   }
 
@@ -72,6 +68,7 @@ public class ServerMessageHandler extends InputReaderHandler {
     return this.messageParser.isPrivateMessage(message);
   }
 
+  // TODO Why/how this is clean
   private void shutdownClient() {
     System.out.println(Client.SHUTDOWN);
     System.exit(0);

@@ -6,7 +6,7 @@ import java.net.SocketException;
 
 import constant.Client;
 import constant.Server;
-import format.MessageFormatter;
+import format.StringFormatter;
 import server.SimpleChatServer;
 import server.SimpleChatUser;
 
@@ -20,7 +20,7 @@ public class ClientConnectHandler extends BaseHandler {
   }
 
   public void run() {
-    this.running = true;
+    this.running = true;    
     while (this.running) {
       try {
         Socket chatClient = this.chatServer.getNextClient();
@@ -32,21 +32,23 @@ public class ClientConnectHandler extends BaseHandler {
 
         this.chatServer.addUser(chatUser);
 
-        String formattedUserJoinedMessage = MessageFormatter.formatUserJoinedMessage(username);
-        System.out.println(MessageFormatter.formatServerLog(formattedUserJoinedMessage));
+        new Thread(HandlerFactory.createClientMessageHandler(this.chatServer, chatUser)).start();
 
-        String welcomeMessage = MessageFormatter.formatWelcomeMessage(username);
+        String formattedUserJoinedMessage = StringFormatter.formatUserJoinedMessage(username);
+        System.out.println(StringFormatter.formatServerLog(formattedUserJoinedMessage));
+
+        String welcomeMessage = StringFormatter.formatWelcomeMessage(username);
         chatUser.sendMessage(welcomeMessage);
 
         this.chatServer.broadCastMessage(Server.USERNAME, chatUser.getUserId(), formattedUserJoinedMessage);
 
-        new Thread(HandlerFactory.createClientMessageHandler(this.chatServer, chatUser)).start();
-
       } catch (SocketException socketException) {
         System.out.println(Client.Error.CONNECTION_INTERRUPTED);
+        System.out.println(StringFormatter.formatException(socketException));
       } catch (Exception e) {
-        // this.running = false;
-        System.out.println(MessageFormatter.formatException(e));
+        System.out.println(StringFormatter.formatException(e));
+      } finally {
+        this.running = !Thread.interrupted();
       }
     }
   }
@@ -54,10 +56,11 @@ public class ClientConnectHandler extends BaseHandler {
   private String getUsername(SimpleChatUser chatUser) throws IOException {
     String username = chatUser.readMessage();
     SimpleChatUser existingUser = this.chatServer.getChatUser(username);
-    if (existingUser != null) {
+    
+    if (existingUser != null || username.equals(Server.USERNAME)) {
       Boolean invalidUsername = true;
       while (invalidUsername) {
-        String invalidUsernameMessage = MessageFormatter.formatUsernameAlreadyExistsMessage(username);
+        String invalidUsernameMessage = StringFormatter.formatUsernameAlreadyExistsMessage(username);
         this.chatServer.sendErrorMessage(chatUser, invalidUsernameMessage);
         username = chatUser.readMessage();
         invalidUsername = this.chatServer.getChatUser(username) != null;

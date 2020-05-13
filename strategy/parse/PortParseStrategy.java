@@ -1,17 +1,32 @@
 package strategy.parse;
 
-import parse.ParseResult;
-import constant.Port;;
+import strategy.Result;
+import constant.Port;
+import format.StringFormatter;
 
 public class PortParseStrategy extends IntegerParser implements ParseStrategy<Integer> {
 
-  public ParseResult<Integer> parse(String input) {
-    Integer value = super.parseInteger(input);
+  private final String valueName = "port";
+
+  public Result<Integer> parse(String input) {
+    Result<Integer> result = new Result<Integer>();
+    String errorMessage = "";
+
+    Integer value = this.parseInteger(input);
+
+    if (value == null) {
+      errorMessage = StringFormatter.formatEmptyValueNotPermittedError(this.valueName);
+    } else if (!isValidPort(value)) {
+      errorMessage = StringFormatter.formatInvalidPortError(value);
+    }
+
+    result.setErrorMessage(errorMessage);
+    result.setValue(value);
     
-    Boolean isValid = value != null 
-      && value >= Port.LOWER_PORT_RANGE 
-      && value <= Port.UPPER_PORT_RANGE;
-    
-    return new ParseResult<Integer>(isValid, value);
+    return result;
+  }
+
+  private Boolean isValidPort(Integer port) {
+    return port >= Port.LOWER_PORT_RANGE && port <= Port.UPPER_PORT_RANGE;
   }
 }

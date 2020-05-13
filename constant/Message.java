@@ -24,5 +24,11 @@ public class Message {
   
     // Example valid formatted message: "[User1]: hey everyone!"
     public static final String MESSAGE_FORMATTED_PATTERN = "^(?:\\[)([\\w\\d\\S]+)(?:\\]):(?:[\\s]+)(.*$)";
+  
+    public class Error {
+
+      public static final String MESSAGE_CONTAINS_NO_PRIVATE_TOKEN = "Message does not contain private token";
+      public static final String MESSAGE_IS_NOT_PRIVATE = "Message does not parse to private message";
+    }
   }
 }
