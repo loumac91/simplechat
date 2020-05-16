@@ -1,14 +1,9 @@
 package format;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
 import constant.Format;
+import service.DateTimeService;
 
 public class StringFormatter {
-
-  private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(Format.TIMESTAMP);
 
   //#region ERROR
 
@@ -57,6 +52,10 @@ public class StringFormatter {
     return baseFormat(Format.Chat.PRIVATE_MESSAGE_USERNAME, username);
   }
 
+  public static String formatPrivateMessage(String recipient, String message) {
+    return baseFormat(Format.Chat.PRIVATE_MESSAGE, recipient, message);
+  }
+
   //#endregion
 
   //#region CLIENT
@@ -88,7 +87,7 @@ public class StringFormatter {
   //#region SERVER
 
   public static String formatServerLog(String log) {
-    String timeStamp = ZonedDateTime.now(ZoneId.systemDefault()).format(dateTimeFormatter);
+    String timeStamp = new DateTimeService().getCurrentTimeStamp();
     return baseFormat(Format.Server.LOG, timeStamp, log);
   }
 
@@ -116,9 +115,9 @@ public class StringFormatter {
     return baseFormat(Format.Server.PRIVATE_MESSAGE_RECIPIENT_NOT_FOUND, username);
   }
 
+  //#endregion
+
   private static String baseFormat(String format, Object... args) {
     return String.format(format, args);
   }
-
-  //#endregion
 }

@@ -29,6 +29,8 @@ public class Message {
 
       public static final String MESSAGE_CONTAINS_NO_PRIVATE_TOKEN = "Message does not contain private token";
       public static final String MESSAGE_IS_NOT_PRIVATE = "Message does not parse to private message";
+      public static final String MESSAGE_CONTAINS_NO_PRIVATE_MESSAGE_USERNAME_PREFIX = "Message does not contain a private message username prefix";
+      public static final String MESSAGE_COULD_NOT_BE_PARSED = "Message could not be parsed";
     }
   }
 }

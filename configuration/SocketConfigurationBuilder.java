@@ -47,7 +47,7 @@ public class SocketConfigurationBuilder {
       }
 
       String arg = args[i];
-      for (SocketConfigurationMapper socketConfiguratioMapper : createConfigurationMappers()) {
+      for (SocketConfigurationMapper socketConfiguratioMapper : getConfigurationMappers()) {
         if (socketConfiguratioMapper.isMatch(arg)) {
           skipNextArg = true;
           String unParsedValue = args[i + 1]; // Assumption that next value in list is commands value
@@ -58,7 +58,7 @@ public class SocketConfigurationBuilder {
     }
   }
 
-  private ArrayList<SocketConfigurationMapper> createConfigurationMappers() {
+  private ArrayList<SocketConfigurationMapper> getConfigurationMappers() {
     ArrayList<SocketConfigurationMapper> configurationMappers = new ArrayList<SocketConfigurationMapper>();
     if (this.addressConfigurationMapper != null) {
       configurationMappers.add(this.addressConfigurationMapper);

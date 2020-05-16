@@ -17,6 +17,7 @@ public class Format {
   public class Chat {
     public static final String CHAT_MESSAGE = "[%s]: %s"; // e.g. [User1]: Hey
     public static final String PRIVATE_MESSAGE_USERNAME = Message.PRIVATE_MESSAGE_USERNAME_PREFIX + "%s"; // e.g. [from:User1]
+    public static final String PRIVATE_MESSAGE = Message.PRIVATE_MESSAGE_TOKEN + "%s %s"; // @{Username} hey
   }
 
   public class Client {

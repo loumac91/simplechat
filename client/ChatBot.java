@@ -1,7 +1,10 @@
 package client;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 
 import configuration.SocketConfiguration;
 import configuration.SocketConfigurationBuilder;
@@ -11,6 +14,9 @@ import constant.Client;
 import constant.Ansi.Colour;
 import constant.Server;
 import format.StringFormatter;
+import parse.MessageParser;
+import parse.Message;
+import strategy.Result;
 
 public class ChatBot {
   
@@ -23,16 +29,47 @@ public class ChatBot {
       .buildFromCommandLine(args);
 
     try (SimpleChatBot bot = new SimpleChatBot(socketConfiguration)) {
-      BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(bot.getReadStream()));      
+      BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(bot.getReadStream())); 
+      MessageParser messageParser = new MessageParser();
 
       bot.sendMessage(constant.SimpleChatBot.NAME);
       String formattedWelcomeMessage = StringFormatter.formatStringColour(Colour.GREEN, serverInputReader.readLine());
       System.out.println(formattedWelcomeMessage);
-
+      
       while (true) {
         String response = serverInputReader.readLine();
-        bot.sendMessage(constant.SimpleChatBot.NAME, response + "from meeee");
+
+        if (messageParser.isServerAnnouncement(response)) {
+          continue;
+        }
+
+        Result<Message> parsedMessage = messageParser.parseReceivedMessage(response);
+        if (!parsedMessage.getIsSuccess()) {
+          continue;
+        }
+
+        Message message = parsedMessage.getValue();
+
+        Boolean isPrivate = messageParser.isPrivateMessage(response);
+        
+        String botResponse = "";
+        
+        if (botResponse.length() == 0) {
+          continue;
+        }
+
+        if (isPrivate) {
+          bot.sendPrivateMessage(message.getUsername(), botResponse);
+        } else {
+          bot.sendMessage(botResponse);
+        }
       }
+    } catch (UnknownHostException unknownHostException) {
+      System.out.println(Client.Error.UNKNOWN_HOST);
+    } catch (ConnectException connectException) {
+      System.out.println(Client.Error.CONNECT);
+    } catch (IOException ioException) {
+      System.out.println(StringFormatter.formatException(ioException));
     } catch (Exception exception) {
       System.out.println(StringFormatter.formatException(exception));
     }

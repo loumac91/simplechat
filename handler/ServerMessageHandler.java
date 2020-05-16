@@ -47,17 +47,21 @@ public class ServerMessageHandler extends InputReaderHandler {
   }
 
   private String getColouredServerMessage(String serverMessage) {
-    String colour = "";
-
-    if (isServerAnnouncement(serverMessage)) {
-      colour = Colour.WHITE;
-    } else if (isPrivateMessage(serverMessage)) {
-      colour = Colour.CYAN;
-    }
+    String colour = getMessageColour(serverMessage);
 
     return colour.length() > 0 
       ? StringFormatter.formatStringColour(colour, serverMessage)
       : serverMessage;
+  }
+
+  private String getMessageColour(String message) {
+    if (isServerAnnouncement(message)) {
+      return Colour.WHITE;
+    } else if (isPrivateMessage(message)) {
+      return Colour.CYAN;
+    }
+
+    return "";
   }
 
   private Boolean isServerAnnouncement(String message) {

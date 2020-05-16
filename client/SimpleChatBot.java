@@ -16,9 +16,8 @@ public class SimpleChatBot extends SimpleChatClientBase {
     this.streamWriter.println(message);
   }
 
-  @Override
-  public void sendMessage(String username, String message) {
-    String formatted = StringFormatter.formatChatMessage(username, message);
-    this.sendMessage(formatted);
-  }  
+  public void sendPrivateMessage(String recipient, String message) {
+    String formatted = StringFormatter.formatPrivateMessage(recipient, message);
+    sendMessage(formatted);
+  }
 }

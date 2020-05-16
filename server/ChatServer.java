@@ -8,7 +8,10 @@ import java.util.concurrent.Executors;
 import constant.Ansi.Colour;
 import constant.Server;
 import format.StringFormatter;
-import configuration.*;
+import configuration.SocketConfiguration;
+import configuration.SocketConfigurationBuilder;
+import configuration.SocketConfigurationMapper;
+import configuration.SocketConfigurationSetterFactory;
 import handler.HandlerFactory;
 import input.BaseInputParser;
 import input.UserInputParser;
@@ -53,9 +56,9 @@ public class ChatServer {
                 continue;
             }
           }
-        } catch (IOException e) {
+        } catch (IOException ioException) {
           running = false;
-          System.out.println("Exception in ChatServer" + e.getClass().getCanonicalName());
+          System.out.println(StringFormatter.formatException(ioException));
         }
       }
     } catch (BindException bindException) {

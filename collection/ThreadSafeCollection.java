@@ -4,104 +4,79 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+// Thread safe collection to ensure expected behaviour in multi-threaded use cases
+
 public class ThreadSafeCollection<T> implements Collection<T> {
 
-  private final Object lock = new Object();
   private final Collection<T> innerCollection;
 
   public ThreadSafeCollection(Collection<T> collection) {
     super();
-    this.innerCollection = Collections.synchronizedCollection(collection);
+    this.innerCollection = Collections.synchronizedCollection(collection); // Documentation here notes that traversing the collection in anyway (outside of overridden methods) will require the use of a synchronized lock
   }
 
   @Override
   public int size() {
-    synchronized (this.lock) {
-      return this.innerCollection.size();
-    }
+    return this.innerCollection.size();
   }
 
   @Override
   public boolean isEmpty() {
-    synchronized (this.lock) {
-      return this.innerCollection.isEmpty();
-    }
+    return this.innerCollection.isEmpty();
   }
 
   @Override
   public boolean contains(Object o) {
-    synchronized (this.lock) {
-      return this.innerCollection.contains(o);
-    }
+    return this.innerCollection.contains(o);
   }
 
   @Override
   public Iterator<T> iterator() {
-    synchronized (this.lock) {
-      return this.innerCollection.iterator();
-    }
+    return this.innerCollection.iterator();
   }
 
   @Override
   public Object[] toArray() {
-    synchronized (this.lock) {
-      return this.innerCollection.toArray();
-    }
+    return this.innerCollection.toArray();    
   }
 
   @Override
   public <T> T[] toArray(T[] a) {
-    synchronized (this.lock) {
-      return this.innerCollection.toArray(a);
-    }
+    return this.innerCollection.toArray(a);
   }
 
   @Override
   public boolean add(T e) {
-    synchronized (this.lock) {
-      return this.innerCollection.add(e);
-    }
+    return this.innerCollection.add(e);
   }
 
   @Override
   public boolean remove(Object o) {
-    synchronized (this.lock) {
-      return this.innerCollection.remove(o);
-    }
+    return this.innerCollection.remove(o);
   }
 
   @Override
   public boolean containsAll(Collection<?> c) {
-    synchronized (this.lock) {
-      return this.innerCollection.containsAll(c);
-    }
+    return this.innerCollection.containsAll(c);    
   }
 
   @Override
   public boolean addAll(Collection<? extends T> c) {
-    synchronized (this.lock) {
-      return this.addAll(c);
-    }
+    return this.addAll(c);
   }
 
   @Override
   public boolean removeAll(Collection<?> c) {
-    synchronized (this.lock) {
-      return this.innerCollection.removeAll(c);
-    }
+    return this.innerCollection.removeAll(c);
   }
 
   @Override
   public boolean retainAll(Collection<?> c) {
-    synchronized (this.lock) {
-      return this.innerCollection.retainAll(c);
-    }
+    return this.innerCollection.retainAll(c);
   }
 
   @Override
   public void clear() {
-    synchronized (this.lock) {
-      this.innerCollection.clear();
-    }
+    this.innerCollection.clear();
   }  
 }

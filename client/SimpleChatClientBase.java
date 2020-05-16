@@ -23,7 +23,7 @@ public abstract class SimpleChatClientBase implements AutoCloseable {
     this.streamWriter = new PrintWriter(this.socket.getOutputStream(), true);
   }
 
-  public abstract void sendMessage(String username, String message);
+  public abstract void sendMessage(String message);
 
   public InputStream getReadStream() throws IOException {
     return this.socket.getInputStream();
