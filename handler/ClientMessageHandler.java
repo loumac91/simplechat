@@ -56,7 +56,7 @@ public class ClientMessageHandler extends BaseHandler {
     SimpleChatUser recipient = this.chatServer.getChatUser(privateMessage.getUsername());
 
     if (recipient != null) {
-      this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessage(), recipient);
+      this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessageContent(), recipient);
     } else {
       String privateMessageError = StringFormatter.formatPrivateMessageRecipientNotFound(recipientName);
       this.chatServer.sendErrorMessage(this.chatUser, privateMessageError);

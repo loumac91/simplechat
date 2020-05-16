@@ -47,6 +47,8 @@ public class ChatClient {
       
 
       //TODO use username to print message 
+      // your messages will appear as [username]: xsa
+      // to recipients
       String serverAnnouncementsInfoMessage = StringFormatter.formatServerAnnouncementsInfoMessage(Colour.WHITE, "WHITE");
       String privateMessagesInfoMessage = StringFormatter.formatPrivateMessagesInfoMessage(Colour.CYAN, "CYAN");
       System.out.println(serverAnnouncementsInfoMessage);

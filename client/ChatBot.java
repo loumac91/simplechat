@@ -15,6 +15,7 @@ import constant.Ansi.Colour;
 import constant.Server;
 import format.StringFormatter;
 import parse.MessageParser;
+import service.MessageResponseService;
 import parse.Message;
 import strategy.Result;
 
@@ -31,6 +32,7 @@ public class ChatBot {
     try (SimpleChatBot bot = new SimpleChatBot(socketConfiguration)) {
       BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(bot.getReadStream())); 
       MessageParser messageParser = new MessageParser();
+      MessageResponseService messageResponseService = new MessageResponseService();
 
       bot.sendMessage(constant.SimpleChatBot.NAME);
       String formattedWelcomeMessage = StringFormatter.formatStringColour(Colour.GREEN, serverInputReader.readLine());
@@ -43,21 +45,20 @@ public class ChatBot {
           continue;
         }
 
-        Result<Message> parsedMessage = messageParser.parseReceivedMessage(response);
+        Result<Message> parsedMessage = messageParser.tryParseMessage(response);
         if (!parsedMessage.getIsSuccess()) {
           continue;
         }
 
         Message message = parsedMessage.getValue();
+        String messageContent = message.getMessageContent(); 
+        String botResponse = messageResponseService.getDateQueryResponse(messageContent);
 
-        Boolean isPrivate = messageParser.isPrivateMessage(response);
-        
-        String botResponse = "";
-        
         if (botResponse.length() == 0) {
           continue;
         }
 
+        Boolean isPrivate = messageParser.isPrivateMessage(response);  
         if (isPrivate) {
           bot.sendPrivateMessage(message.getUsername(), botResponse);
         } else {

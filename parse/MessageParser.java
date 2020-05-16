@@ -9,11 +9,21 @@ import strategy.Result;
 public class MessageParser {
   
   private final Integer usernameIndex = 1;
-  private final Integer messageIndex = 2;
+  private final Integer messageContentIndex = 2;
   private final Pattern privateMessagePattern = Pattern.compile(Message.Pattern.PRIVATE_MESSAGE_PATTERN);
   private final Pattern serverAnnouncementPattern = Pattern.compile(Message.Pattern.SERVER_ANNOUNCEMENT_PATTERN);
   private final Pattern privateMessageFormattedPattern = Pattern.compile(Message.Pattern.PRIVATE_MESSAGE_FORMATTED_PATTERN);
   private final Pattern messageFormattedPattern = Pattern.compile(Message.Pattern.MESSAGE_FORMATTED_PATTERN);
+
+  public Result<parse.Message> tryParseMessage(String message) {
+    Result<parse.Message> result = parseRecievedPrivateMessage(message);
+
+    if (result.getErrorMessage().length() > 0) {
+      result = parseReceivedMessage(message);
+    }
+
+    return result;
+  }
 
   public Result<parse.Message> parsePrivateMessage(String message) {
     Result<parse.Message> result = new Result<parse.Message>();
@@ -28,7 +38,7 @@ public class MessageParser {
       if (!matcher.matches()) {
         errorMessage = Message.Pattern.Error.MESSAGE_IS_NOT_PRIVATE;
       } else {
-        parseMessage = getMessage(matcher);
+        parseMessage = getMessage(matcher, false);
       }
     }
 
@@ -51,7 +61,7 @@ public class MessageParser {
       if (!matcher.matches()) {
         errorMessage = Message.Pattern.Error.MESSAGE_IS_NOT_PRIVATE;
       } else {    
-        parseMessage = getMessage(matcher);
+        parseMessage = getMessage(matcher, true);
       }
     }
 
@@ -71,7 +81,7 @@ public class MessageParser {
     if (!matcher.matches()) {
       errorMessage = Message.Pattern.Error.MESSAGE_COULD_NOT_BE_PARSED;
     } else {    
-      parseMessage = getMessage(matcher);
+      parseMessage = getMessage(matcher, false);
     }
 
     result.setErrorMessage(errorMessage);
@@ -97,10 +107,10 @@ public class MessageParser {
     return pattern.matcher(trimmedMessage);
   }
 
-  private parse.Message getMessage(Matcher matcher) {
-    String username = matcher.group(this.usernameIndex);
-    String message = matcher.group(this.messageIndex);
+  private parse.Message getMessage(Matcher matcher, Boolean nextCaptureGroup) {
+    String username = matcher.group(nextCaptureGroup ? this.usernameIndex + 1 : this.usernameIndex);
+    String messageContent = matcher.group(nextCaptureGroup ? this.messageContentIndex + 1 : this.messageContentIndex);
 
-    return new parse.Message(username, message);
+    return new parse.Message(username, messageContent);
   }
 }

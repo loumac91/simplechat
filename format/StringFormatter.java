@@ -117,6 +117,18 @@ public class StringFormatter {
 
   //#endregion
 
+  //#region
+
+  public static String formatCurrentTimeMessage(String currentTime) {
+    return baseFormat(Format.Bot.CURRENT_TIME_MESSAGE, currentTime);
+  }
+
+  public static String formatCurrentDayMessage(String currentDay) {
+    return baseFormat(Format.Bot.CURRENT_DAY_MESSAGE, currentDay);
+  }
+
+  //#endregion
+
   private static String baseFormat(String format, Object... args) {
     return String.format(format, args);
   }

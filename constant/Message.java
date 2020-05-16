@@ -7,13 +7,13 @@ public class Message {
   public static final String PRIVATE_MESSAGE_USERNAME_PREFIX = "from:";
   
   public class Pattern {
-
+    
     // Example valid private message format: "@joe-bloggs hey joe !"
     // Regex breakdown:
     // 1. ^(?:@) - non capture group, string must start with (^) @ character
     // 2. ([\w\d\S]+) - capture group for username, any number of alphanumeric character (\w or \d) and non-whitespace character (\S)
     // 3. (?:[\s]+) - non capture group, any number of whitespace characters
-    // 4. (.*$) - capture group for message, any input characters
+    // 4. (.*$) - capture group for message, any length of input characters to the end of the string (. any character but newline, * any number, $ to end of string)
     public static final String PRIVATE_MESSAGE_PATTERN = "^(?:" + PRIVATE_MESSAGE_TOKEN + ")([\\w\\d\\S]+)(?:[\\s]+)(.*$)";
     
     // Example valid server message: "[SERVER]: Server shutting down."
@@ -24,7 +24,7 @@ public class Message {
   
     // Example valid formatted message: "[User1]: hey everyone!"
     public static final String MESSAGE_FORMATTED_PATTERN = "^(?:\\[)([\\w\\d\\S]+)(?:\\]):(?:[\\s]+)(.*$)";
-  
+
     public class Error {
 
       public static final String MESSAGE_CONTAINS_NO_PRIVATE_TOKEN = "Message does not contain private token";

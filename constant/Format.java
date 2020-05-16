@@ -36,4 +36,9 @@ public class Format {
     public static final String USER_DISCONNECTED_MESSAGE = "%s has left the chat";
     public static final String PRIVATE_MESSAGE_RECIPIENT_NOT_FOUND = "Your private message was not delivered as no user with the name \"%s\" was found";
   }
+
+  public class Bot {
+    public static final String CURRENT_TIME_MESSAGE = "The time now is: %s";
+    public static final String CURRENT_DAY_MESSAGE = "Today is %s, :)";
+  }
 }
