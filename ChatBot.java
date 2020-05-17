@@ -1,5 +1,3 @@
-package client;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +16,8 @@ import parse.MessageParser;
 import service.MessageResponseService;
 import parse.Message;
 import strategy.Result;
+import util.StringUtils;
+import client.SimpleChatBot;
 
 public class ChatBot {
   
@@ -54,7 +54,7 @@ public class ChatBot {
         String messageContent = message.getMessageContent(); 
         String botResponse = messageResponseService.getDateQueryResponse(messageContent);
 
-        if (botResponse.length() == 0) {
+        if (StringUtils.isNullEmptyOrWhitespace(botResponse)) {
           continue;
         }
 

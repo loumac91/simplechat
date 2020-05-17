@@ -1,6 +1,7 @@
 package handler;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 import constant.Server;
 import format.StringFormatter;
@@ -33,13 +34,17 @@ public class ClientMessageHandler extends BaseHandler {
         }
 
         this.chatServer.broadCastMessage(this.chatUser, message);
+      } catch (SocketException socketException) {
+        this.running = false;
+        String formatted = StringFormatter.formatUserMessageHandlingInterruptedError(this.chatUser.getUsername());
+        System.out.println(formatted);
       } catch (IOException ioException) {
         this.running = false;
-        disconnectUser();
-
         System.out.println(StringFormatter.formatException(ioException));
       }
     }
+    
+    disconnectUser();
   }
 
   private void handlePrivateMessage(Result<Message> privateMessageResult) {

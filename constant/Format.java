@@ -12,6 +12,7 @@ public class Format {
     public static final String EMPTY_VALUE_NOT_PERMITTED = "\"%s\" must be a non empty value";
     public static final String ERROR_DISCONNECTING_USER = "Exception thrown when trying to disconnect user: \"%s\"";
     public static final String VALUE_CANNOT_BE_PARSED = "\"%s\" could not be parsed to type \"%s\"";
+    public static final String USER_MESSAGE_HANDLING_INTERRUPTED = "The connection was interrupted for user \"%s\", message handling has terminated for this user";
   }
 
   public class Chat {

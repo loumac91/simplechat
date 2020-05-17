@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 
-import constant.Client;
 import constant.Server;
 import format.StringFormatter;
 import server.SimpleChatServer;
@@ -43,7 +42,7 @@ public class ClientConnectHandler extends BaseHandler {
         this.chatServer.broadCastMessage(Server.USERNAME, chatUser.getUserId(), formattedUserJoinedMessage);
 
       } catch (SocketException socketException) {
-        System.out.println(Client.Error.CONNECTION_INTERRUPTED);
+        System.out.println(Server.Error.CLIENT_UNABLE_TO_CONNECT);
         System.out.println(StringFormatter.formatException(socketException));
       } catch (Exception e) {
         System.out.println(StringFormatter.formatException(e));

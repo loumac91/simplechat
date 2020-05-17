@@ -1,5 +1,3 @@
-package server;
-
 import java.io.*;
 import java.net.BindException;
 import java.util.concurrent.ExecutorService;
@@ -16,6 +14,8 @@ import handler.HandlerFactory;
 import input.BaseInputParser;
 import input.UserInputParser;
 import strategy.parse.ServerCommandParseStrategy;
+import server.ServerCommand;
+import server.SimpleChatServer;
 
 public class ChatServer {
   

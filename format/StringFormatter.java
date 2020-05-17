@@ -32,6 +32,10 @@ public class StringFormatter {
     return baseFormat(Format.Error.VALUE_CANNOT_BE_PARSED, value, className);
   }
 
+  public static String formatUserMessageHandlingInterruptedError(String username) {
+    return baseFormat(Format.Error.USER_MESSAGE_HANDLING_INTERRUPTED, username);
+  }
+
   //#endregion
 
   //#region COLOUR

@@ -13,7 +13,9 @@ Refactor if private message didnt arrive
 Add Chat Bot client
 Final refactor + consistency checks
 
-close server without any connected clients
+GO THROUGH SPEC AND CHECK EACH REQUIREMENT IS MET
+COMMENT CODE
+SUBMIT
 
 
 USER INPUT PARSE
@@ -35,3 +37,4 @@ After submitting name
 --
 bot could respond to
 what day of the week is it?
+

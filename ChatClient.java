@@ -1,5 +1,3 @@
-package client;
-
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -14,6 +12,7 @@ import constant.Server;
 import constant.Client;
 import constant.Ansi.Colour;
 import format.StringFormatter;
+import client.SimpleChatClient;
 
 public class ChatClient {
 
