@@ -23,11 +23,6 @@ public class ServerMessageHandler extends InputReaderHandler {
 
         if (StringUtils.IsNull(serverMessage)) {
           shutdownClient(); // Scenario here is that server has closed socket, there is no further reason to run ChatClient so shutdown.
-          // Execution on main thread will have blocked on BufferedReader.readLine() - it's underlying readstream is System.in
-          // Why System.exit(0)? Issue lies in main thread, the BufferedReader.readLine() within the while loop that reads user input
-          // will block forever. It uses the System.in stream which does not unblock the readLine() call even when the stream is closed.
-          // Decision here is that the application should end if the connection is interrupted - could be extended to have a retry policy.
-          // however this was not included in spec
         }
 
         String formatted = getColouredServerMessage(serverMessage);
@@ -73,7 +68,11 @@ public class ServerMessageHandler extends InputReaderHandler {
     return this.messageParser.isPrivateMessage(message);
   }
 
-  // TODO Why/how this is clean
+  // Why System.exit(0)? Issue lies in main thread of SimpleChatClient, the BufferedReader.readLine() within the while loop that reads user input
+  // will block forever. It uses the System.in input stream which does not unblock the readLine() call even when the stream is closed or if it's thread is interrupted.
+  // Decision here is that the application should end if the connection is interrupted - before doing so, any open streams/sockets are closed either explicitly
+  // or via Autocloseable implementation
+  // This saves the user having to enter anything else on the command line once the server has disconnected them
   private void shutdownClient() {
     try {
       this.inputReader.close(); 
