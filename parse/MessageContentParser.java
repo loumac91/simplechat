@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 import constant.MessageContent;
 
+// Regex parser for message content
+
 public class MessageContentParser {
   
   private final Pattern currentTimeQueryPattern = Pattern.compile(MessageContent.Pattern.CURRENT_TIME_QUERY, Pattern.CASE_INSENSITIVE);

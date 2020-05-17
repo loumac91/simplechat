@@ -40,6 +40,7 @@ public class SimpleChatServer implements AutoCloseable {
     this.simpleChatUsers.remove(user);
   }
 
+  // Synchronized used to ensure thread safety
   public SimpleChatUser getChatUser(String username) {
     synchronized (this.lock) {
       return this.simpleChatUsers

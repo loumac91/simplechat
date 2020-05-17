@@ -30,8 +30,10 @@ public class SocketConfigurationBuilder {
   }
 
   public SocketConfiguration buildFromCommandLine(String[] args) {
+    // Set default values to begin with
     SocketConfiguration defaultConfiguration = new SocketConfiguration(this.defaultAddress, this.defaultPort);
     
+    // override with provided arguments (only when they are provided)
     mapConfiguration(args, defaultConfiguration);
 
     return defaultConfiguration;
@@ -40,6 +42,7 @@ public class SocketConfigurationBuilder {
   private void mapConfiguration(String[] args, SocketConfiguration socketConfiguration) {
     Boolean skipNextArg = false;
 
+    // Loop through every argument
     for (int i = 0; i < args.length; i++) {
       if (skipNextArg) {
         skipNextArg = false;
@@ -47,6 +50,7 @@ public class SocketConfigurationBuilder {
       }
 
       String arg = args[i];
+      // Loop through each mapper, if the argument matches a mappers get, execute the mapper on the socket configuration
       for (SocketConfigurationMapper socketConfiguratioMapper : getConfigurationMappers()) {
         if (socketConfiguratioMapper.isMatch(arg)) {
           skipNextArg = true;

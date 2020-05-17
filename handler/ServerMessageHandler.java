@@ -14,6 +14,7 @@ public class ServerMessageHandler extends InputReaderHandler {
     super(inputReader);
   }
 
+  // TODO REVIEW
   public void run() {
     this.running = true;
     while (this.running) {
@@ -49,7 +50,7 @@ public class ServerMessageHandler extends InputReaderHandler {
   private String getColouredServerMessage(String serverMessage) {
     String colour = getMessageColour(serverMessage);
 
-    return colour.length() > 0 
+    return !StringUtils.isNullEmptyOrWhitespace(colour)
       ? StringFormatter.formatStringColour(colour, serverMessage)
       : serverMessage;
   }
@@ -74,6 +75,9 @@ public class ServerMessageHandler extends InputReaderHandler {
 
   // TODO Why/how this is clean
   private void shutdownClient() {
+    try {
+      this.inputReader.close(); 
+    } catch (IOException ioException) {  }
     System.out.println(Client.SHUTDOWN);
     System.exit(0);
   }

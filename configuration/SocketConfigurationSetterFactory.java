@@ -7,6 +7,7 @@ import strategy.Result;
 
 public class SocketConfigurationSetterFactory {
 
+  // Only set a value if it was successfully parsed
   public static final BiConsumer<String, SocketConfiguration> addressSetter = 
     (value, socketConfiguration) -> {
       Result<String> parseResult = new AddressParseStrategy().parse(value);

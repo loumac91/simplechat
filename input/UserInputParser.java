@@ -28,15 +28,15 @@ public class UserInputParser<T> extends BaseInputParser<T> {
   public T parseInput(String prompt, ParseStrategy<T> parseStrategy, ValidationStrategy<T> validationStrategy) throws IOException {
     Result<T> parseResult = null;
     Boolean invalidInput = true;
-    while (invalidInput) {
-      parseResult = this.parsePromptResponse(prompt, parseStrategy);
+    while (invalidInput) { // while input is neither parsed or validated
+      parseResult = this.parsePromptResponse(prompt, parseStrategy); // parse the input
       if (!parseResult.getIsSuccess()) {
         System.out.println(parseResult.getErrorMessage());
         continue;
       }
       
-      ValidationResult<Boolean> validationResult = validationStrategy.isValid(parseResult.getValue());
-      invalidInput = !validationResult.getValue();
+      ValidationResult<Boolean> validationResult = validationStrategy.isValid(parseResult.getValue()); // validate the input
+      invalidInput = !validationResult.getValue(); // decide whether to return the value
       if (invalidInput) {
         System.out.println(validationResult.getErrorMessage());
       } else {

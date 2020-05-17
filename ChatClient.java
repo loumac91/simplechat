@@ -27,36 +27,35 @@ public class ChatClient {
       .withPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
       .buildFromCommandLine(args);
 
-    // 2. Attempt to connect to chat server
+    // 2. Attempt to connect to chat server - will close socket on any exception
     String connectingMessage = StringFormatter.formatConnectingMessage(socketConfiguration.address, socketConfiguration.port);
     System.out.println(StringFormatter.formatStringColour(Colour.YELLOW, connectingMessage));
 
     try (SimpleChatClient chatClient = new SimpleChatClient(socketConfiguration)) {
+      // 3. Confirm connection to user
       String connectedMessage = StringFormatter.formatConnectedMessage(socketConfiguration.address, socketConfiguration.port);
       System.out.println(StringFormatter.formatStringColour(Colour.GREEN, connectedMessage));
 
       BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(chatClient.getReadStream()));
 
-      // 2. Get Client username
+      // 4. Get unique username / validate with server
       String username = userInputParser.parseInput(
         Client.Prompt.USERNAME_PROMPT, 
         new UserInputParseStrategy(Client.USERNAME),
         new UsernameValidationStrategy(chatClient, serverInputReader)
       );
       
-
-      //TODO use username to print message 
-      // your messages will appear as [username]: xsa
-      // to recipients
+      String userMessagesInfoMessage = StringFormatter.formatUserMessagesInfoMessage(username);
       String serverAnnouncementsInfoMessage = StringFormatter.formatServerAnnouncementsInfoMessage(Colour.WHITE, "WHITE");
       String privateMessagesInfoMessage = StringFormatter.formatPrivateMessagesInfoMessage(Colour.CYAN, "CYAN");
+      System.out.println(userMessagesInfoMessage);
       System.out.println(serverAnnouncementsInfoMessage);
       System.out.println(privateMessagesInfoMessage);
 
-      // 4. Start (Runnable) handler for simplechat Server messages
+      // 5. Start (Runnable) handler for simplechat Server messages
       new Thread(HandlerFactory.createServerMessageHandler(serverInputReader)).start();
 
-      // 5. Handle user input for sending messages and parsing commands
+      // 6. Handle user input for sending messages
       while (true) {        
         String message = userInputParser.getUnparsedInput();
         chatClient.sendMessage(message);

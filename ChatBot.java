@@ -22,6 +22,7 @@ import client.SimpleChatBot;
 public class ChatBot {
   
   public static void main(String[] args) {
+    // 1. Read socket configuration from command line arguments (default values are also provided)
     SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
       .withDefaultAddress(Server.DEFAULT_ADDRESS)
       .withDefaultPort(Server.DEFAULT_PORT)
@@ -29,15 +30,18 @@ public class ChatBot {
       .withPortMapper(new SocketConfigurationMapper(Client.Param.PORT, SocketConfigurationSetterFactory.portSetter))
       .buildFromCommandLine(args);
 
+    // 2. Initialise chat with configurations - will close socket on any exception
     try (SimpleChatBot bot = new SimpleChatBot(socketConfiguration)) {
       BufferedReader serverInputReader = new BufferedReader(new InputStreamReader(bot.getReadStream())); 
       MessageParser messageParser = new MessageParser();
       MessageResponseService messageResponseService = new MessageResponseService();
 
+      // 3. Send bot name to server to register
       bot.sendMessage(constant.SimpleChatBot.NAME);
       String formattedWelcomeMessage = StringFormatter.formatStringColour(Colour.GREEN, serverInputReader.readLine());
       System.out.println(formattedWelcomeMessage);
       
+      // 4. Observe all user messages sent from server
       while (true) {
         String response = serverInputReader.readLine();
 

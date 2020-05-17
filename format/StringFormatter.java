@@ -3,6 +3,8 @@ package format;
 import constant.Format;
 import service.DateTimeService;
 
+// Formatting class for provided strongly typed messages
+
 public class StringFormatter {
 
   //#region ERROR
@@ -74,6 +76,10 @@ public class StringFormatter {
 
   public static String formatWelcomeMessage(String username) {
     return baseFormat(Format.Client.USER_WELCOME_MESSAGE, username);
+  }
+
+  public static String formatUserMessagesInfoMessage(String username) {
+    return baseFormat(Format.Client.USER_MESSAGES_INFO, username);
   }
 
   public static String formatServerAnnouncementsInfoMessage(String colour, String colourName) {

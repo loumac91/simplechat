@@ -8,12 +8,15 @@ import java.net.UnknownHostException;
 
 import configuration.SocketConfiguration;
 
+// Base client class which implements autocloseable
+// This ensures that the socket is closed if an exception occurs
+
 public abstract class SimpleChatClientBase implements AutoCloseable {
   
   private final String address;
   private final int port;
   
-  protected final Socket socket;
+  protected final Socket socket; // Protected so available to children but not publicly accessible
   protected final PrintWriter streamWriter;
 
   protected SimpleChatClientBase(SocketConfiguration clientSocketConfiguration) throws UnknownHostException, IOException {
@@ -35,6 +38,6 @@ public abstract class SimpleChatClientBase implements AutoCloseable {
 
   @Override
   public void close() throws IOException {
-    this.socket.close(); // This will close the streamWriter aswell
+    this.socket.close(); // This will close the this.streamWriter aswell
   }
 }

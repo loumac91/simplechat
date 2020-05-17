@@ -4,15 +4,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-// Thread safe collection to ensure expected behaviour in multi-threaded use cases
-
 public class ThreadSafeCollection<T> implements Collection<T> {
 
   private final Collection<T> innerCollection;
 
   public ThreadSafeCollection(Collection<T> collection) {
     super();
-    this.innerCollection = Collections.synchronizedCollection(collection); // Documentation here notes that traversing the collection in anyway (outside of overridden methods) will require the use of a synchronized lock
+    // Documentation here notes that traversing the collection in anyway (outside of overridden methods) 
+    // will require the use of a synchronized lock. Therefore overriden methods don't require lock as this
+    // is managed internally
+    this.innerCollection = Collections.synchronizedCollection(collection);
   }
 
   @Override

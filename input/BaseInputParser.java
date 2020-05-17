@@ -10,6 +10,8 @@ import strategy.Result;
 import strategy.parse.ParseStrategy;
 import strategy.validate.ValidationStrategy;
 
+// Abstract base class for parsing string input to a given type <T>
+
 public abstract class BaseInputParser<T> implements Closeable {
   
   private final BufferedReader inputReader;

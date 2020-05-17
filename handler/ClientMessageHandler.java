@@ -10,6 +10,8 @@ import server.SimpleChatUser;
 import parse.*;
 import strategy.Result;
 
+// Runnable handler for transmitting messages received from a client socket
+
 public class ClientMessageHandler extends BaseHandler {
 
   private final SimpleChatServer chatServer;
@@ -25,7 +27,7 @@ public class ClientMessageHandler extends BaseHandler {
     this.running = true;
     while (this.running) {
       try {
-        String message = this.chatUser.readMessage();
+        String message = this.chatUser.readMessage(); // Wait for next message
 
         Result<Message> privateMessageResult = this.messageParser.parsePrivateMessage(message);
         if (privateMessageResult.getIsSuccess()) {
@@ -60,9 +62,10 @@ public class ClientMessageHandler extends BaseHandler {
 
     SimpleChatUser recipient = this.chatServer.getChatUser(privateMessage.getUsername());
 
-    if (recipient != null) {
+    if (recipient != null) { 
       this.chatServer.sendPrivateMessage(this.chatUser.getUsername(), privateMessage.getMessageContent(), recipient);
-    } else {
+    } else { 
+      // If can't find recipient, tell sender their message wasn't delivered
       String privateMessageError = StringFormatter.formatPrivateMessageRecipientNotFound(recipientName);
       this.chatServer.sendErrorMessage(this.chatUser, privateMessageError);
     }

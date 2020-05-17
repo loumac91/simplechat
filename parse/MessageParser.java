@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import constant.Message;
 import strategy.Result;
+import util.StringUtils;
 
 public class MessageParser {
   
@@ -15,16 +16,18 @@ public class MessageParser {
   private final Pattern privateMessageFormattedPattern = Pattern.compile(Message.Pattern.PRIVATE_MESSAGE_FORMATTED_PATTERN);
   private final Pattern messageFormattedPattern = Pattern.compile(Message.Pattern.MESSAGE_FORMATTED_PATTERN);
 
+  // Try to parse to parse to private message else try normal message
   public Result<parse.Message> tryParseMessage(String message) {
     Result<parse.Message> result = parseRecievedPrivateMessage(message);
 
-    if (result.getErrorMessage().length() > 0) {
+    if (StringUtils.isNullEmptyOrWhitespace(result.getErrorMessage())) {
       result = parseReceivedMessage(message);
     }
 
     return result;
   }
 
+  // Try to parse @{username} {message}
   public Result<parse.Message> parsePrivateMessage(String message) {
     Result<parse.Message> result = new Result<parse.Message>();
     String errorMessage = "";
@@ -48,6 +51,7 @@ public class MessageParser {
     return result;
   }
 
+  // Try to parse [from:{username}]: message
   public Result<parse.Message> parseRecievedPrivateMessage(String message) {
     Result<parse.Message> result = new Result<parse.Message>();
     String errorMessage = "";
@@ -71,6 +75,7 @@ public class MessageParser {
     return result;
   }
 
+    // Try to parse [{username}]: message
   public Result<parse.Message> parseReceivedMessage(String message) {
     Result<parse.Message> result = new Result<parse.Message>();
     String errorMessage = "";

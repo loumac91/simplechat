@@ -21,6 +21,8 @@ public class ChatServer {
   
   public static void main(String[] args) {
     BaseInputParser<ServerCommand> userInputParser = new UserInputParser<ServerCommand>(System.in);
+
+    // 1. Read socket configuration from command line arguments (default values are also provided)
     SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
       .withDefaultAddress(Server.DEFAULT_ADDRESS)
       .withDefaultPort(Server.DEFAULT_PORT)
@@ -30,15 +32,16 @@ public class ChatServer {
     String serverStartingUpMessage = StringFormatter.formatServerStartingUpMessage(socketConfiguration.address, socketConfiguration.port);
     System.out.println(StringFormatter.formatStringColour(Colour.YELLOW, serverStartingUpMessage));
 
-    // 1. Run (AutoCloseable) Host
+    // 2. Run (AutoCloseable) server - will close socket on any exception
     try (SimpleChatServer chatServer = new SimpleChatServer(socketConfiguration)) {
       String serverRunningMessage = StringFormatter.formatServerRunningMessage(socketConfiguration.address, socketConfiguration.port);
       System.out.println(StringFormatter.formatStringColour(Colour.GREEN, serverRunningMessage));
 
-      // Thread for handling Connectings
+      // 3. Setup single thread executor for handling new client connecting
       ExecutorService executorService = Executors.newSingleThreadExecutor();
       executorService.execute(HandlerFactory.createClientConnectHandler(chatServer));
 
+      // 4. Parse server admin input to act on any command provided
       Boolean running = true;
       while (running) {
         try {

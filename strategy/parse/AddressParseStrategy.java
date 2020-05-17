@@ -26,8 +26,7 @@ public class AddressParseStrategy implements ParseStrategy<String> {
   }
 
   // Currently only allows "localhost" or ip4 addresses e.g. 192.168.10.250
-  private Boolean isValidAddressName(String input) {
-    
+  private Boolean isValidAddressName(String input) {    
     Integer length = input.length();
     Integer noDotsLength = input.replace(".", "").length();
     Boolean containsThreeDots = (length - noDotsLength) == 3;

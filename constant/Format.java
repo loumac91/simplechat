@@ -25,6 +25,7 @@ public class Format {
     public static final String CONNECTING = "Trying to connect to \"%s:%d\" ...";
     public static final String CONNECTED = "Connected to \"%s:%d\"";
     public static final String USER_WELCOME_MESSAGE = "Welcome to SimpleChat %s!";
+    public static final String USER_MESSAGES_INFO = "Your messages will appear in the following format in the chat window of other connected clients: [%s]: {YOUR MESSAGE}";
     public static final String SERVER_ANNOUNCEMENT_INFO = "Server messages will be shown in %s";
     public static final String PRIVATE_MESSAGES_INFO = "Private messages will be prefixed with \"" + Message.PRIVATE_MESSAGE_USERNAME_PREFIX + "\" and shown in %s";  }
 

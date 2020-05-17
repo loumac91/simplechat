@@ -13,6 +13,7 @@ public class MessageResponseService {
     this.dateTimeService = new DateTimeService();
   }
 
+  // Used by ChatBot to determine whether a users message contains a query about the day/time etc
   public String getDateQueryResponse(String messageContent) {
     String result = "";
 
