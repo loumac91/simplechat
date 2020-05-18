@@ -8,7 +8,7 @@ public class Format {
   public class Error {
     public static final String EXCEPTION = "Exception {%s}: \"%s\"";
     public static final String INVALID_PORT = "%d is not a valid port number";
-    public static final String INVALID_ADDRESS = "%s is not a valid host address";
+    public static final String INVALID_ADDRESS = "\"%s\" could not be resolved to a host";
     public static final String EMPTY_VALUE_NOT_PERMITTED = "\"%s\" must be a non empty value";
     public static final String ERROR_DISCONNECTING_USER = "Exception thrown when trying to disconnect user: \"%s\"";
     public static final String VALUE_CANNOT_BE_PARSED = "\"%s\" could not be parsed to type \"%s\"";

@@ -2,12 +2,12 @@ package util;
 
 public class StringUtils {
 
-  public static Boolean IsNull(String s) {
+  public static Boolean isNull(String s) {
     return s == null;
   }
 
   public static Boolean isNullOrEmpty(String s) {
-    return IsNull(s) || s.isEmpty();
+    return isNull(s) || s.isEmpty();
   }
 
   public static Boolean isNullEmptyOrWhitespace(String s) {

@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import handler.HandlerFactory;
 import input.BaseInputParser;
@@ -18,6 +20,7 @@ public class ChatClient {
 
   public static void main(String[] args) {
     BaseInputParser<String> userInputParser = new UserInputParser<String>(System.in);
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // 1. Read socket configuration from command line arguments (default values are also provided)
     SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
@@ -53,7 +56,7 @@ public class ChatClient {
       System.out.println(privateMessagesInfoMessage);
 
       // 5. Start (Runnable) handler for simplechat Server messages
-      new Thread(HandlerFactory.createServerMessageHandler(serverInputReader)).start();
+      executorService.execute(HandlerFactory.createServerMessageHandler(serverInputReader));
 
       // 6. Handle user input for sending messages
       while (true) {        
@@ -72,6 +75,8 @@ public class ChatClient {
       try {
         userInputParser.close();
       } catch (IOException ioException) {  }
+
+      executorService.shutdownNow();
     }
   }
 }

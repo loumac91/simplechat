@@ -9,6 +9,7 @@ import server.SimpleChatServer;
 import server.SimpleChatUser;
 import parse.*;
 import strategy.Result;
+import util.StringUtils;
 
 // Runnable handler for transmitting messages received from a client socket
 
@@ -29,6 +30,11 @@ public class ClientMessageHandler extends BaseHandler {
       try {
         String message = this.chatUser.readMessage(); // Wait for next message
 
+        if (StringUtils.isNull(message)) {
+          this.running = false;
+          continue;
+        }
+
         Result<Message> privateMessageResult = this.messageParser.parsePrivateMessage(message);
         if (privateMessageResult.getIsSuccess()) {
           handlePrivateMessage(privateMessageResult);
@@ -38,14 +44,15 @@ public class ClientMessageHandler extends BaseHandler {
         this.chatServer.broadCastMessage(this.chatUser, message);
       } catch (SocketException socketException) {
         this.running = false;
-        String formatted = StringFormatter.formatUserMessageHandlingInterruptedError(this.chatUser.getUsername());
-        System.out.println(formatted);
+        System.out.println(StringFormatter.formatException(socketException));
       } catch (IOException ioException) {
         this.running = false;
         System.out.println(StringFormatter.formatException(ioException));
       }
     }
     
+    String formatted = StringFormatter.formatUserMessageHandlingInterruptedError(this.chatUser.getUsername());
+    System.out.println(formatted);
     disconnectUser();
   }
 

@@ -21,6 +21,7 @@ public class ChatServer {
   
   public static void main(String[] args) {
     BaseInputParser<ServerCommand> userInputParser = new UserInputParser<ServerCommand>(System.in);
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // 1. Read socket configuration from command line arguments (default values are also provided)
     SocketConfiguration socketConfiguration = new SocketConfigurationBuilder()
@@ -38,7 +39,6 @@ public class ChatServer {
       System.out.println(StringFormatter.formatStringColour(Colour.GREEN, serverRunningMessage));
 
       // 3. Setup single thread executor for handling new client connecting
-      ExecutorService executorService = Executors.newSingleThreadExecutor();
       executorService.execute(HandlerFactory.createClientConnectHandler(chatServer));
 
       // 4. Parse server admin input to act on any command provided
@@ -74,6 +74,7 @@ public class ChatServer {
       try {
         userInputParser.close();
       } catch (IOException ioException) {  }
+      executorService.shutdownNow();
     }
   }
 }

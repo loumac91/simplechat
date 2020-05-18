@@ -1,7 +1,11 @@
 package strategy.parse;
 
 import util.StringUtils;
-import constant.Server;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import format.StringFormatter;
 import strategy.Result;
 
@@ -11,26 +15,31 @@ public class AddressParseStrategy implements ParseStrategy<String> {
 
   public Result<String> parse(String input) {
     Result<String> result = new Result<String>();
+    String address = "";
     String errorMessage = "";
 
-    if (StringUtils.IsNull(input)) {
+    if (StringUtils.isNull(input)) {
       errorMessage = StringFormatter.formatEmptyValueNotPermittedError(this.valueName);
-    } else if (!isValidAddressName(input)) {
-      errorMessage = StringFormatter.formatInvalidAddressError(input);
+    } else {
+      address = tryParseHostAddress(input);
+
+      if (StringUtils.isNull(address)) {
+        errorMessage = StringFormatter.formatInvalidAddressError(input);
+      }
     }
 
     result.setErrorMessage(errorMessage);
-    result.setValue(input);
+    result.setValue(address);
 
     return result;
   }
 
-  // Currently only allows "localhost" or ip4 addresses e.g. 192.168.10.250
-  private Boolean isValidAddressName(String input) {    
-    Integer length = input.length();
-    Integer noDotsLength = input.replace(".", "").length();
-    Boolean containsThreeDots = (length - noDotsLength) == 3;
-    
-    return input == Server.DEFAULT_ADDRESS || containsThreeDots;
+  private String tryParseHostAddress(String input) {
+    try {
+      InetAddress inetAddress = Inet4Address.getByName(input);
+      return inetAddress.getHostAddress();
+    } catch (UnknownHostException unknownHostException) {
+      return null;
+    }
   }
 }

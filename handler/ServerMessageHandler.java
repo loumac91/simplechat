@@ -14,14 +14,13 @@ public class ServerMessageHandler extends InputReaderHandler {
     super(inputReader);
   }
 
-  // TODO REVIEW
   public void run() {
     this.running = true;
     while (this.running) {
       try {
         String serverMessage = this.inputReader.readLine();
 
-        if (StringUtils.IsNull(serverMessage)) {
+        if (StringUtils.isNull(serverMessage)) {
           shutdownClient(); // Scenario here is that server has closed socket, there is no further reason to run ChatClient so shutdown.
         }
 
