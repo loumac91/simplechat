@@ -33,3 +33,14 @@ Just used ctrl + c in terminal to terminate client - server should handle this c
 
 ## Shutting down server
 Type "EXIT" into server terminal
+
+## Interacting with ChatBot
+ChatBot will read all incoming messages from the server and detect phrases such as
+what time is it
+what day is it
+and will respond with the time
+If a user private messages ChatBot - ChatBot will respond privately as well
+
+## Private messaging
+@{username} message
+e.g. @joe hey joe
