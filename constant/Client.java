@@ -7,8 +7,8 @@ public class Client {
 
   public class Error {
     public static final String UNKNOWN_HOST = "Unable to determine IP address of host";
-    public static final String CONNECT = "Error occured while attempting to connect to server socket";
-    public static final String CONNECTION_INTERRUPTED = "Connection to server was interrupted";
+    public static final String CONNECT = "Error occured while attempting to connect to the specified server socket";
+    public static final String CONNECTION_INTERRUPTED = "Connection to the server was interrupted";
   }
 
   public class Prompt {

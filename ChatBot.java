@@ -45,6 +45,11 @@ public class ChatBot {
       while (true) {
         String response = serverInputReader.readLine();
 
+        if (StringUtils.isNull(response)) {
+          serverInputReader.close();
+          break;
+        }
+
         if (messageParser.isServerAnnouncement(response)) {
           continue;
         }
@@ -69,6 +74,8 @@ public class ChatBot {
           bot.sendMessage(botResponse);
         }
       }
+
+      System.out.println(constant.SimpleChatBot.SHUTDOWN);
     } catch (UnknownHostException unknownHostException) {
       System.out.println(Client.Error.UNKNOWN_HOST);
     } catch (ConnectException connectException) {
