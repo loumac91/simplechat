@@ -20,7 +20,7 @@ public class MessageParser {
   public Result<parse.Message> tryParseMessage(String message) {
     Result<parse.Message> result = parseRecievedPrivateMessage(message);
 
-    if (StringUtils.isNullEmptyOrWhitespace(result.getErrorMessage())) {
+    if (!StringUtils.isNullEmptyOrWhitespace(result.getErrorMessage())) {
       result = parseReceivedMessage(message);
     }
 
